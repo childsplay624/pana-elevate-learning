@@ -1,10 +1,13 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Menu, X, ChevronDown } from "lucide-react";
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/hooks/useAuth';
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const { user, signOut } = useAuth();
 
   const navItems = [
     { name: "Home", href: "#home" },
@@ -71,9 +74,22 @@ const Navigation = () => {
 
           {/* CTA Button */}
           <div className="hidden md:flex items-center space-x-4">
-            <Button variant="premium" size="sm">
-              Get Started
-            </Button>
+            {user ? (
+              <div className="flex items-center gap-4">
+                <Link to="/dashboard">
+                  <Button variant="outline" size="sm">Dashboard</Button>
+                </Link>
+                <Button variant="ghost" size="sm" onClick={signOut}>
+                  Sign Out
+                </Button>
+              </div>
+            ) : (
+              <Link to="/auth">
+                <Button variant="premium" size="sm">
+                  Sign In
+                </Button>
+              </Link>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -118,9 +134,22 @@ const Navigation = () => {
                 </div>
               ))}
               <div className="pt-4 border-t border-border">
-                <Button variant="premium" className="w-full">
-                  Get Started
-                </Button>
+                {user ? (
+                  <div className="space-y-2">
+                    <Link to="/dashboard">
+                      <Button variant="outline" className="w-full">Dashboard</Button>
+                    </Link>
+                    <Button variant="ghost" className="w-full" onClick={signOut}>
+                      Sign Out
+                    </Button>
+                  </div>
+                ) : (
+                  <Link to="/auth">
+                    <Button variant="premium" className="w-full">
+                      Sign In
+                    </Button>
+                  </Link>
+                )}
               </div>
             </div>
           </div>

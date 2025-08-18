@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
@@ -113,9 +114,12 @@ export function CourseCard({
           size="sm" 
           className="w-full" 
           variant={progress > 0 ? "default" : "outline"}
+          asChild
         >
-          <Play className="h-3 w-3 mr-1" />
-          {progress > 0 ? 'Continue' : 'Start Course'}
+          <Link to={`/course/${id}`}>
+            <Play className="h-3 w-3 mr-1" />
+            {progress > 0 ? 'Continue' : 'Start Course'}
+          </Link>
         </Button>
       </CardContent>
     </Card>

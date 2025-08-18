@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { useStudentData } from '@/hooks/useStudentData';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { CourseCard } from '@/components/dashboard/CourseCard';
@@ -176,9 +177,11 @@ export default function MyCourses() {
                               <span>{course.totalHours}h total</span>
                             </div>
                           </div>
-                          <Button>
-                            <Play className="h-4 w-4 mr-2" />
-                            Continue Learning
+                          <Button asChild>
+                            <Link to={`/course/${course.id}`}>
+                              <Play className="h-4 w-4 mr-2" />
+                              Continue Learning
+                            </Link>
                           </Button>
                         </div>
                       </div>

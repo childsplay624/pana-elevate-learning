@@ -20,6 +20,7 @@ import Certificates from "./pages/student/Certificates";
 import Progress from "./pages/student/Progress";
 import Assignments from "./pages/student/Assignments";
 import Help from "./pages/student/Help";
+import CourseLearning from "./pages/CourseLearning";
 import CoursesPage from "./pages/CoursesPage";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
@@ -82,6 +83,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={['admin', 'instructor', 'student']}>
                   <CoursesPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/course/:courseId" 
+              element={
+                <ProtectedRoute allowedRoles={['student', 'instructor', 'admin']}>
+                  <CourseLearning />
                 </ProtectedRoute>
               } 
             />

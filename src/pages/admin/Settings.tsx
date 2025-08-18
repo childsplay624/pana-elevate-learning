@@ -105,7 +105,7 @@ export default function Settings() {
           case 'Courses':
             return ['course_auto_approval', 'enable_course_reviews', 'certificate_generation', 'max_enrollment', 'certificate_validity', 'zoom_api_key', 'zoom_api_secret'].includes(key);
           case 'Appearance':
-            return ['primary_color', 'secondary_color', 'dark_mode_support', 'logo_url', 'favicon_url'].includes(key);
+            return ['primary_color', 'secondary_color', 'dark_mode_support', 'logo_url', 'favicon_url', 'backend_logo_url'].includes(key);
           default:
             return false;
         }
@@ -562,42 +562,87 @@ export default function Settings() {
                 </CardTitle>
                 <CardDescription>Customize the platform's look and feel</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="primary-color">Primary Color</Label>
-                    <div className="flex items-center gap-4">
-                      <Input id="primary-color" type="color" defaultValue="#0ea5e9" className="w-20 h-10" />
-                      <Input defaultValue="#0ea5e9" className="flex-1" />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="secondary-color">Secondary Color</Label>
-                    <div className="flex items-center gap-4">
-                      <Input id="secondary-color" type="color" defaultValue="#64748b" className="w-20 h-10" />
-                      <Input defaultValue="#64748b" className="flex-1" />
-                    </div>
-                  </div>
-                </div>
-                <Separator />
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-base">Dark Mode Support</Label>
-                      <p className="text-sm text-muted-foreground">Enable dark mode theme option</p>
-                    </div>
-                    <Switch defaultChecked />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="logo-url">Logo URL</Label>
-                    <Input id="logo-url" placeholder="https://example.com/logo.png" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="favicon-url">Favicon URL</Label>
-                    <Input id="favicon-url" placeholder="https://example.com/favicon.ico" />
-                  </div>
-                </div>
-                <Button onClick={() => handleSave('Appearance')} disabled={loading}>
+               <CardContent className="space-y-6">
+                 <div className="space-y-4">
+                   <div className="space-y-2">
+                     <Label htmlFor="primary-color">Primary Color</Label>
+                     <div className="flex items-center gap-4">
+                       <Input 
+                         id="primary-color" 
+                         type="color" 
+                         value={settings.primary_color || '#0ea5e9'} 
+                         onChange={(e) => updateSetting('primary_color', e.target.value)}
+                         className="w-20 h-10" 
+                       />
+                       <Input 
+                         value={settings.primary_color || '#0ea5e9'} 
+                         onChange={(e) => updateSetting('primary_color', e.target.value)}
+                         className="flex-1" 
+                       />
+                     </div>
+                   </div>
+                   <div className="space-y-2">
+                     <Label htmlFor="secondary-color">Secondary Color</Label>
+                     <div className="flex items-center gap-4">
+                       <Input 
+                         id="secondary-color" 
+                         type="color" 
+                         value={settings.secondary_color || '#64748b'} 
+                         onChange={(e) => updateSetting('secondary_color', e.target.value)}
+                         className="w-20 h-10" 
+                       />
+                       <Input 
+                         value={settings.secondary_color || '#64748b'} 
+                         onChange={(e) => updateSetting('secondary_color', e.target.value)}
+                         className="flex-1" 
+                       />
+                     </div>
+                   </div>
+                 </div>
+                 <Separator />
+                 <div className="space-y-4">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <Label className="text-base">Dark Mode Support</Label>
+                       <p className="text-sm text-muted-foreground">Enable dark mode theme option</p>
+                     </div>
+                     <Switch 
+                       checked={settings.dark_mode_support || false}
+                       onCheckedChange={(checked) => updateSetting('dark_mode_support', checked)}
+                     />
+                   </div>
+                   <div className="space-y-2">
+                     <Label htmlFor="logo-url">Frontend Logo URL</Label>
+                     <Input 
+                       id="logo-url" 
+                       placeholder="https://example.com/logo.png or upload an image"
+                       value={settings.logo_url || ''} 
+                       onChange={(e) => updateSetting('logo_url', e.target.value)}
+                     />
+                     <p className="text-sm text-muted-foreground">Logo displayed on the main website and student dashboard</p>
+                   </div>
+                   <div className="space-y-2">
+                     <Label htmlFor="backend-logo-url">Admin/Backend Logo URL</Label>
+                     <Input 
+                       id="backend-logo-url" 
+                       placeholder="https://example.com/admin-logo.png or upload an image"
+                       value={settings.backend_logo_url || ''} 
+                       onChange={(e) => updateSetting('backend_logo_url', e.target.value)}
+                     />
+                     <p className="text-sm text-muted-foreground">Logo displayed in admin dashboard and backend interfaces</p>
+                   </div>
+                   <div className="space-y-2">
+                     <Label htmlFor="favicon-url">Favicon URL</Label>
+                     <Input 
+                       id="favicon-url" 
+                       placeholder="https://example.com/favicon.png"
+                       value={settings.favicon_url || ''} 
+                       onChange={(e) => updateSetting('favicon_url', e.target.value)}
+                     />
+                     <p className="text-sm text-muted-foreground">Small icon displayed in browser tabs (PNG/JPG format only)</p>
+                   </div>
+                 </div>
+                 <Button onClick={() => handleSave('Appearance')} disabled={saving}>
                   <Save className="w-4 h-4 mr-2" />
                   {loading ? 'Saving...' : 'Save Changes'}
                 </Button>

@@ -201,85 +201,126 @@ export function CourseEditor() {
 
   return (
     <DashboardLayout>
-      <div className="bg-background">{/* Removed min-h-screen as it's handled by CourseLayout */}
-      {/* Header */}
-      <div className="border-b">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => navigate('/dashboard/courses')}
-              >
-                <ArrowLeft className="h-4 w-4 mr-2" />
-                Back to Courses
-              </Button>
+      <div className="bg-background">
+        {/* Navigation Bar */}
+        <nav className="border-b bg-card">
+          <div className="container mx-auto px-4">
+            <div className="flex items-center justify-between h-16">
+              {/* Left side - Navigation */}
+              <div className="flex items-center gap-6">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => navigate('/dashboard/courses')}
+                  className="text-muted-foreground hover:text-foreground"
+                >
+                  <ArrowLeft className="h-4 w-4 mr-2" />
+                  Courses
+                </Button>
+                <div className="h-6 w-px bg-border"></div>
+                <nav className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/dashboard')}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Dashboard
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/dashboard/courses')}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    My Courses
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => navigate('/dashboard/analytics')}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    Analytics
+                  </Button>
+                </nav>
+              </div>
+
+              {/* Right side - Actions */}
+              {canEdit && (
+                <div className="flex items-center gap-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate(`/course/${courseId}`)}
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={saveCourse}
+                    disabled={saving}
+                  >
+                    <Save className="h-4 w-4 mr-2" />
+                    {saving ? 'Saving...' : 'Save'}
+                  </Button>
+                  
+                  {course.status === 'draft' && (
+                    <Button
+                      size="sm"
+                      onClick={() => updateCourseStatus('published')}
+                    >
+                      Publish Course
+                    </Button>
+                  )}
+                  
+                  {course.status === 'published' && (
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => updateCourseStatus('draft')}
+                    >
+                      Unpublish
+                    </Button>
+                  )}
+                  
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={deleteCourse}
+                  >
+                    <Trash2 className="h-4 w-4 mr-2" />
+                    Delete
+                  </Button>
+                </div>
+              )}
+            </div>
+          </div>
+        </nav>
+
+        {/* Course Header */}
+        <div className="border-b bg-muted/30">
+          <div className="container mx-auto px-4 py-6">
+            <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold">{course.title}</h1>
-                <div className="flex items-center gap-2 mt-1">
+                <h1 className="text-3xl font-bold">{course.title}</h1>
+                <div className="flex items-center gap-3 mt-2">
                   <Badge variant={course.status === 'published' ? 'default' : 'secondary'}>
                     {course.status}
                   </Badge>
                   <span className="text-sm text-muted-foreground">
                     {course.category}
                   </span>
+                  <span className="text-sm text-muted-foreground">
+                    • {course.duration_hours} hours
+                  </span>
                 </div>
               </div>
             </div>
-            
-            {canEdit && (
-              <div className="flex items-center gap-2">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => navigate(`/course/${courseId}`)}
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  Preview
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={saveCourse}
-                  disabled={saving}
-                >
-                  <Save className="h-4 w-4 mr-2" />
-                  {saving ? 'Saving...' : 'Save'}
-                </Button>
-                
-                {course.status === 'draft' && (
-                  <Button
-                    size="sm"
-                    onClick={() => updateCourseStatus('published')}
-                  >
-                    Publish Course
-                  </Button>
-                )}
-                
-                {course.status === 'published' && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => updateCourseStatus('draft')}
-                  >
-                    Unpublish
-                  </Button>
-                )}
-                
-                <Button
-                  variant="destructive"
-                  size="sm"
-                  onClick={deleteCourse}
-                >
-                  <Trash2 className="h-4 w-4 mr-2" />
-                  Delete
-                </Button>
-              </div>
-            )}
           </div>
         </div>
-      </div>
 
       <div className="container mx-auto px-4 py-8">
         <Tabs value={activeTab} onValueChange={setActiveTab}>

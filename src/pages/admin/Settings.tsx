@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -11,6 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import { 
   Settings2, 
   Globe, 
@@ -22,23 +23,118 @@ import {
   Users,
   BookOpen,
   Palette,
-  Save
+  Save,
+  Loader2
 } from 'lucide-react';
+
+interface PlatformSettings {
+  [key: string]: any;
+}
 
 export default function Settings() {
   const { toast } = useToast();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [settings, setSettings] = useState<PlatformSettings>({});
 
-  const handleSave = async (section: string) => {
-    setLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setLoading(false);
-    toast({
-      title: "Settings updated",
-      description: `${section} settings have been saved successfully.`,
-    });
+  const fetchSettings = async () => {
+    try {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from('platform_settings')
+        .select('key, value');
+
+      if (error) throw error;
+
+      const settingsMap: PlatformSettings = {};
+      data.forEach(item => {
+        settingsMap[item.key] = typeof item.value === 'string' ? 
+          JSON.parse(item.value) : item.value;
+      });
+
+      setSettings(settingsMap);
+    } catch (error) {
+      console.error('Failed to fetch settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to load settings",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
   };
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const updateSetting = (key: string, value: any) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  const handleSave = async (category: string) => {
+    try {
+      setSaving(true);
+      
+      // Get settings for this category
+      const categorySettings = Object.entries(settings).filter(([key]) => {
+        switch (category) {
+          case 'General':
+            return ['platform_name', 'platform_url', 'support_email', 'default_language', 'platform_description'].includes(key);
+          case 'Security':
+            return ['require_email_verification', 'two_factor_auth', 'password_requirements', 'session_timeout', 'max_login_attempts'].includes(key);
+          case 'Notifications':
+            return ['email_notifications', 'course_completion_alerts', 'payment_notifications', 'system_maintenance_alerts', 'admin_email'].includes(key);
+          case 'Payment':
+            return ['paystack_enabled', 'flutterwave_enabled', 'default_currency', 'platform_fee'].includes(key);
+          case 'Courses':
+            return ['course_auto_approval', 'enable_course_reviews', 'certificate_generation', 'max_enrollment', 'certificate_validity'].includes(key);
+          case 'Appearance':
+            return ['primary_color', 'secondary_color', 'dark_mode_support', 'logo_url', 'favicon_url'].includes(key);
+          default:
+            return false;
+        }
+      });
+
+      // Update each setting in the database
+      for (const [key, value] of categorySettings) {
+        const { error } = await supabase
+          .from('platform_settings')
+          .update({ value: JSON.stringify(value) })
+          .eq('key', key);
+
+        if (error) throw error;
+      }
+
+      toast({
+        title: "Settings updated",
+        description: `${category} settings have been saved successfully.`,
+      });
+    } catch (error) {
+      console.error('Failed to save settings:', error);
+      toast({
+        title: "Error",
+        description: "Failed to save settings",
+        variant: "destructive"
+      });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <DashboardLayout>
+        <div className="p-6 flex items-center justify-center min-h-[400px]">
+          <div className="text-center">
+            <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+            <p className="text-muted-foreground">Loading settings...</p>
+          </div>
+        </div>
+      </DashboardLayout>
+    );
+  }
 
   return (
     <DashboardLayout>
@@ -72,19 +168,35 @@ export default function Settings() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div className="space-y-2">
                     <Label htmlFor="platform-name">Platform Name</Label>
-                    <Input id="platform-name" defaultValue="EduPlatform" />
+                    <Input 
+                      id="platform-name" 
+                      value={settings.platform_name || ''} 
+                      onChange={(e) => updateSetting('platform_name', e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="platform-url">Platform URL</Label>
-                    <Input id="platform-url" defaultValue="https://eduplatform.com" />
+                    <Input 
+                      id="platform-url" 
+                      value={settings.platform_url || ''} 
+                      onChange={(e) => updateSetting('platform_url', e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="support-email">Support Email</Label>
-                    <Input id="support-email" type="email" defaultValue="support@eduplatform.com" />
+                    <Input 
+                      id="support-email" 
+                      type="email" 
+                      value={settings.support_email || ''} 
+                      onChange={(e) => updateSetting('support_email', e.target.value)}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="default-language">Default Language</Label>
-                    <Select defaultValue="en">
+                    <Select 
+                      value={settings.default_language || 'en'} 
+                      onValueChange={(value) => updateSetting('default_language', value)}
+                    >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
@@ -103,11 +215,13 @@ export default function Settings() {
                     placeholder="Brief description of your learning platform..."
                     className="resize-none"
                     rows={3}
+                    value={settings.platform_description || ''}
+                    onChange={(e) => updateSetting('platform_description', e.target.value)}
                   />
                 </div>
-                <Button onClick={() => handleSave('General')} disabled={loading}>
+                <Button onClick={() => handleSave('General')} disabled={saving}>
                   <Save className="w-4 h-4 mr-2" />
-                  {loading ? 'Saving...' : 'Save Changes'}
+                  {saving ? 'Saving...' : 'Save Changes'}
                 </Button>
               </CardContent>
             </Card>

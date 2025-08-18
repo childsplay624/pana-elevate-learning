@@ -8,7 +8,8 @@ import {
   BookOpen, Award, Calendar, Clock, TrendingUp, 
   AlertCircle, Info, Target, CheckCircle, ChevronRight, 
   Plus, Trophy, RefreshCw, FileText, Video, FileCode, 
-  AlertTriangle, Download, Play, Code 
+  AlertTriangle, Download, Play, Code, Settings, 
+  BarChart3, Flame, Activity, FileType, Eye
 } from 'lucide-react';
 import { CourseCard } from '@/components/dashboard/CourseCard';
 import { DashboardLayout } from '@/components/DashboardLayout';
@@ -306,6 +307,257 @@ export default function StudentDashboard() {
                     }))} 
                     isLoading={isLoading} 
                   />
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Quick Actions */}
+            <div className="mb-8">
+              <h2 className="text-xl font-bold tracking-tight mb-4">Quick Actions</h2>
+              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                  <Play className="h-5 w-5" />
+                  <span className="text-xs">Continue Learning</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                  <Plus className="h-5 w-5" />
+                  <span className="text-xs">New Course</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                  <Award className="h-5 w-5" />
+                  <span className="text-xs">My Certificates</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                  <Calendar className="h-5 w-5" />
+                  <span className="text-xs">Study Schedule</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                  <Target className="h-5 w-5" />
+                  <span className="text-xs">Set Goals</span>
+                </Button>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                  <BarChart3 className="h-5 w-5" />
+                  <span className="text-xs">Progress Report</span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Learning Resources */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight">Learning Resources</h2>
+                  <p className="text-muted-foreground text-sm">
+                    Recommended resources to enhance your learning
+                  </p>
+                </div>
+                <Button variant="ghost" size="sm" className="text-primary">
+                  View All <ChevronRight className="ml-1 h-4 w-4" />
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center">
+                        <FileType className="h-5 w-5 text-red-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <Badge variant="secondary" className="mb-2 text-xs">PDF</Badge>
+                        <h3 className="font-medium text-sm mb-1">Complete Guide to React Hooks</h3>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Master React Hooks with this comprehensive guide covering all the essential hooks and patterns.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">2.4 MB</span>
+                          <Button size="sm" variant="outline" className="h-7 text-xs">
+                            <Download className="h-3 w-3 mr-1" />
+                            Download
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Video className="h-5 w-5 text-blue-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <Badge variant="secondary" className="mb-2 text-xs">Video</Badge>
+                        <h3 className="font-medium text-sm mb-1">TypeScript Crash Course</h3>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Learn TypeScript fundamentals and advanced patterns in this comprehensive video tutorial.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">45 min</span>
+                          <Button size="sm" variant="outline" className="h-7 text-xs">
+                            <Play className="h-3 w-3 mr-1" />
+                            Watch Now
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Code className="h-5 w-5 text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <Badge variant="secondary" className="mb-2 text-xs">Code</Badge>
+                        <h3 className="font-medium text-sm mb-1">React Performance Optimization</h3>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Code examples and patterns for optimizing React application performance.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">12 files</span>
+                          <Button size="sm" variant="outline" className="h-7 text-xs">
+                            <Eye className="h-3 w-3 mr-1" />
+                            View Code
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardContent className="p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                        <FileText className="h-5 w-5 text-purple-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <Badge variant="secondary" className="mb-2 text-xs">Article</Badge>
+                        <h3 className="font-medium text-sm mb-1">State Management in 2023</h3>
+                        <p className="text-xs text-muted-foreground mb-2">
+                          Comparing different state management solutions for modern React applications.
+                        </p>
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">8 min read</span>
+                          <Button size="sm" variant="outline" className="h-7 text-xs">
+                            <FileText className="h-3 w-3 mr-1" />
+                            Read More
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+
+            {/* Study Goals and Weekly Streak */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+              {/* Study Goals */}
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+                  <div>
+                    <CardTitle className="text-lg">Study Goals</CardTitle>
+                    <CardDescription>Track your learning objectives and milestones</CardDescription>
+                  </div>
+                  <Button size="sm" variant="outline">
+                    <Plus className="h-4 w-4 mr-1" />
+                    New Goal
+                  </Button>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Weekly Learning Time</span>
+                      <span className="text-sm text-muted-foreground">0% of 5h</span>
+                    </div>
+                    <Progress value={0} className="h-2" />
+                  </div>
+                  
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium">Course Completion</span>
+                      <span className="text-sm text-muted-foreground">0 of 2 courses</span>
+                    </div>
+                    <Progress value={0} className="h-2" />
+                  </div>
+
+                  <Button variant="ghost" size="sm" className="w-full justify-start text-primary">
+                    View All Goals <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </CardContent>
+              </Card>
+
+              {/* Weekly Streak */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Weekly Streak</CardTitle>
+                  <CardDescription>Keep your learning streak going!</CardDescription>
+                </CardHeader>
+                <CardContent className="text-center space-y-4">
+                  <div className="flex items-center justify-center">
+                    <Flame className="h-8 w-8 text-orange-500 mr-2" />
+                    <span className="text-3xl font-bold">0</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    Start a new learning streak today!
+                  </p>
+                  <Button variant="outline" size="sm">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    View Calendar
+                  </Button>
+                </CardContent>
+              </Card>
+            </div>
+
+            {/* Recent Activity */}
+            <div className="mb-8">
+              <div className="flex items-center justify-between mb-6">
+                <div>
+                  <h2 className="text-xl font-bold tracking-tight">Recent Activity</h2>
+                  <p className="text-muted-foreground text-sm">
+                    Your recent learning activities and progress
+                  </p>
+                </div>
+                <div className="flex gap-2">
+                  <Button variant="ghost" size="sm" className="text-primary">
+                    <Calendar className="h-4 w-4 mr-1" />
+                    View Calendar
+                  </Button>
+                  <Button variant="ghost" size="sm">
+                    <RefreshCw className="h-4 w-4 mr-1" />
+                    Refresh
+                  </Button>
+                </div>
+              </div>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-lg">Recent Activity</CardTitle>
+                  <CardDescription>Your latest learning activities and achievements</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <Activity className="h-5 w-5 text-blue-500 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Activity information</p>
+                      <p className="text-sm text-muted-foreground">You're making progress in Introduction to Programming</p>
+                      <p className="text-xs text-muted-foreground mt-1">45% complete • Last accessed 2 days ago</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 border rounded-lg">
+                    <Activity className="h-5 w-5 text-green-500 mt-0.5" />
+                    <div className="flex-1">
+                      <p className="text-sm font-medium">Activity information</p>
+                      <p className="text-sm text-muted-foreground">You're making progress in Web Development Fundamentals</p>
+                      <p className="text-xs text-muted-foreground mt-1">15% complete • Last accessed 1 week ago</p>
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </div>

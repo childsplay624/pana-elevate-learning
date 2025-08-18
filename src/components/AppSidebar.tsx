@@ -119,8 +119,10 @@ export function AppSidebar() {
                       end={item.url === "/dashboard/courses"} 
                       className={({ isActive }) => getNavCls({ isActive })}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {state !== "collapsed" && <span>{item.title}</span>}
+                      <div className="flex items-center">
+                        <item.icon className="h-4 w-4" />
+                        {state !== "collapsed" && <span className="ml-2">{item.title}</span>}
+                      </div>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

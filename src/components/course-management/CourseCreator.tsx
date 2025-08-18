@@ -74,22 +74,57 @@ export default function CourseCreator() {
     setSaving(true);
     
     try {
+      let updatedCourse = { ...course };
+
+      // If this is a live course and we don't have a meeting ID, create one
+      if (course.course_type === 'live' && !course.zoom_meeting_id && course.scheduled_date) {
+        try {
+          const { data: meetingData, error: meetingError } = await supabase.functions.invoke('create-zoom-meeting', {
+            body: {
+              topic: course.title,
+              start_time: new Date(course.scheduled_date).toISOString(),
+              duration: course.duration_hours * 60, // Convert hours to minutes
+              description: course.description
+            }
+          });
+
+          if (meetingError) throw meetingError;
+
+          if (meetingData?.success) {
+            updatedCourse.zoom_meeting_id = meetingData.meeting_id;
+            setCourse(prev => ({ ...prev, zoom_meeting_id: meetingData.meeting_id }));
+            
+            toast({
+              title: "Zoom meeting created",
+              description: `Meeting ID: ${meetingData.meeting_id}`,
+            });
+          }
+        } catch (error) {
+          console.error('Error creating Zoom meeting:', error);
+          toast({
+            title: "Warning",
+            description: "Course saved but Zoom meeting creation failed. Please check your Zoom settings.",
+            variant: "destructive"
+          });
+        }
+      }
+
       if (courseId) {
         // Update existing course
         const { error } = await supabase
           .from('courses')
           .update({
-            title: course.title,
-            description: course.description,
-            category: course.category,
-            price: course.price,
-            duration_hours: course.duration_hours,
-            level: course.level,
-            status: course.status,
-            thumbnail_url: course.thumbnail_url,
-            course_type: course.course_type,
-            zoom_meeting_id: course.zoom_meeting_id,
-            scheduled_date: course.scheduled_date
+            title: updatedCourse.title,
+            description: updatedCourse.description,
+            category: updatedCourse.category,
+            price: updatedCourse.price,
+            duration_hours: updatedCourse.duration_hours,
+            level: updatedCourse.level,
+            status: updatedCourse.status,
+            thumbnail_url: updatedCourse.thumbnail_url,
+            course_type: updatedCourse.course_type,
+            zoom_meeting_id: updatedCourse.zoom_meeting_id,
+            scheduled_date: updatedCourse.scheduled_date
           })
           .eq('id', courseId);
 
@@ -104,18 +139,18 @@ export default function CourseCreator() {
         const { data, error } = await supabase
           .from('courses')
           .insert({
-            title: course.title,
-            description: course.description,
-            category: course.category,
-            price: course.price,
-            duration_hours: course.duration_hours,
-            level: course.level,
-            status: course.status,
-            thumbnail_url: course.thumbnail_url,
+            title: updatedCourse.title,
+            description: updatedCourse.description,
+            category: updatedCourse.category,
+            price: updatedCourse.price,
+            duration_hours: updatedCourse.duration_hours,
+            level: updatedCourse.level,
+            status: updatedCourse.status,
+            thumbnail_url: updatedCourse.thumbnail_url,
             instructor_id: user.id,
-            course_type: course.course_type,
-            zoom_meeting_id: course.zoom_meeting_id,
-            scheduled_date: course.scheduled_date
+            course_type: updatedCourse.course_type,
+            zoom_meeting_id: updatedCourse.zoom_meeting_id,
+            scheduled_date: updatedCourse.scheduled_date
           })
           .select()
           .single();

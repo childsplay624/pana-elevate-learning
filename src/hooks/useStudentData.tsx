@@ -54,6 +54,8 @@ export function useStudentData() {
         setIsLoading(true);
         setError(null);
 
+        console.log('Fetching student data for user:', user.id);
+        
         // Fetch enrolled courses with instructor details
         const { data: enrollmentsData, error: enrollmentsError } = await supabase
           .from('enrollments')
@@ -77,7 +79,12 @@ export function useStudentData() {
           .eq('student_id', user.id)
           .eq('status', 'enrolled');
 
-        if (enrollmentsError) throw enrollmentsError;
+        if (enrollmentsError) {
+          console.error('Enrollments error:', enrollmentsError);
+          throw enrollmentsError;
+        }
+
+        console.log('Enrollments data:', enrollmentsData);
 
         // Transform enrolled courses data
         const transformedEnrolledCourses: Course[] = (enrollmentsData || []).map((enrollment: any) => ({
@@ -96,10 +103,12 @@ export function useStudentData() {
           image: enrollment.courses.thumbnail_url
         }));
 
+        console.log('Transformed enrolled courses:', transformedEnrolledCourses);
+
         // Fetch recommended courses (published courses not enrolled in)
-        const enrolledCourseIds = transformedEnrolledCourses.map(course => course.course_id);
+        const enrolledCourseIds = transformedEnrolledCourses.map(course => course.course_id).filter(Boolean);
         
-        const { data: recommendedData, error: recommendedError } = await supabase
+        let recommendedQuery = supabase
           .from('courses')
           .select(`
             id,
@@ -113,10 +122,21 @@ export function useStudentData() {
             )
           `)
           .eq('status', 'published')
-          .not('id', 'in', `(${enrolledCourseIds.length > 0 ? enrolledCourseIds.join(',') : 'null'})`)
           .limit(4);
 
-        if (recommendedError) throw recommendedError;
+        // Only exclude enrolled courses if there are any
+        if (enrolledCourseIds.length > 0) {
+          recommendedQuery = recommendedQuery.not('id', 'in', `(${enrolledCourseIds.join(',')})`);
+        }
+
+        const { data: recommendedData, error: recommendedError } = await recommendedQuery;
+
+        if (recommendedError) {
+          console.error('Recommended courses error:', recommendedError);
+          throw recommendedError;
+        }
+
+        console.log('Recommended courses data:', recommendedData);
 
         // Transform recommended courses data
         const transformedRecommendedCourses: Course[] = (recommendedData || []).map((course: any) => ({

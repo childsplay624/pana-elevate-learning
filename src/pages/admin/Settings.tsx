@@ -48,8 +48,22 @@ export default function Settings() {
 
       const settingsMap: PlatformSettings = {};
       data.forEach(item => {
-        settingsMap[item.key] = typeof item.value === 'string' ? 
-          JSON.parse(item.value) : item.value;
+        try {
+          // Try to parse as JSON if it's a string, otherwise use the value directly
+          if (typeof item.value === 'string') {
+            try {
+              settingsMap[item.key] = JSON.parse(item.value);
+            } catch {
+              // If JSON parsing fails, it's likely a plain string value
+              settingsMap[item.key] = item.value;
+            }
+          } else {
+            settingsMap[item.key] = item.value;
+          }
+        } catch (error) {
+          console.warn(`Failed to process setting ${item.key}:`, error);
+          settingsMap[item.key] = item.value;
+        }
       });
 
       setSettings(settingsMap);

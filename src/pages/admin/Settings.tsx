@@ -89,7 +89,7 @@ export default function Settings() {
           case 'Payment':
             return ['paystack_enabled', 'flutterwave_enabled', 'default_currency', 'platform_fee'].includes(key);
           case 'Courses':
-            return ['course_auto_approval', 'enable_course_reviews', 'certificate_generation', 'max_enrollment', 'certificate_validity'].includes(key);
+            return ['course_auto_approval', 'enable_course_reviews', 'certificate_generation', 'max_enrollment', 'certificate_validity', 'zoom_api_key', 'zoom_api_secret'].includes(key);
           case 'Appearance':
             return ['primary_color', 'secondary_color', 'dark_mode_support', 'logo_url', 'favicon_url'].includes(key);
           default:
@@ -426,17 +426,54 @@ export default function Settings() {
                   </div>
                 </div>
                 <Separator />
+                <div className="space-y-4">
+                  <h4 className="text-lg font-medium">Zoom Integration</h4>
+                  <p className="text-sm text-muted-foreground">Configure Zoom API for live course sessions</p>
+                  <div className="grid grid-cols-1 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="zoom-api-key">Zoom API Key</Label>
+                      <Input 
+                        id="zoom-api-key" 
+                        type="password"
+                        placeholder="Enter your Zoom API Key"
+                        value={settings.zoom_api_key || ''} 
+                        onChange={(e) => updateSetting('zoom_api_key', e.target.value)}
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="zoom-api-secret">Zoom API Secret</Label>
+                      <Input 
+                        id="zoom-api-secret" 
+                        type="password"
+                        placeholder="Enter your Zoom API Secret"
+                        value={settings.zoom_api_secret || ''} 
+                        onChange={(e) => updateSetting('zoom_api_secret', e.target.value)}
+                      />
+                    </div>
+                  </div>
+                </div>
+                <Separator />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <Label htmlFor="max-enrollment">Max Enrollment per Course</Label>
-                    <Input id="max-enrollment" type="number" defaultValue="1000" />
+                    <Input 
+                      id="max-enrollment" 
+                      type="number" 
+                      value={settings.max_enrollment || 1000} 
+                      onChange={(e) => updateSetting('max_enrollment', parseInt(e.target.value))}
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="certificate-validity">Certificate Validity (years)</Label>
-                    <Input id="certificate-validity" type="number" defaultValue="5" />
+                    <Input 
+                      id="certificate-validity" 
+                      type="number" 
+                      value={settings.certificate_validity || 5} 
+                      onChange={(e) => updateSetting('certificate_validity', parseInt(e.target.value))}
+                    />
                   </div>
                 </div>
-                <Button onClick={() => handleSave('Courses')} disabled={loading}>
+                <Button onClick={() => handleSave('Courses')} disabled={saving}>
                   <Save className="w-4 h-4 mr-2" />
                   {loading ? 'Saving...' : 'Save Changes'}
                 </Button>

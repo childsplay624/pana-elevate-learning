@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { useAuth } from '@/hooks/useAuth';
-import { useStudentData } from '@/hooks/useStudentData';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -10,14 +9,10 @@ import {
   Plus, Trophy, RefreshCw, FileText, Video, FileCode, 
   AlertTriangle, Download, Play, Code 
 } from 'lucide-react';
-import { CourseCard } from '@/components/dashboard/CourseCard';
-import { Sidebar } from '@/components/dashboard/Sidebar';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ProgressChart } from '@/components/dashboard/ProgressChart';
-import { CourseProgressChart } from '@/components/dashboard/CourseProgressChart';
-import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { DashboardLayout } from '@/components/DashboardLayout';
 
 // Define interfaces for our data models
 interface UserProfile {
@@ -136,19 +131,19 @@ const DashboardError = ({ onRetry }: { onRetry: () => void }) => (
 );
 
 export default function StudentDashboard() {
-  const { profile, signOut } = useAuth();
-  const { 
-    isLoading, 
-    error, 
-    enrolledCourses = [], 
-    recommendedCourses = [], 
-    stats: rawStats = {
-      enrolledCourses: 0,
-      certificates: 0,
-      totalProgress: 0,
-      totalTimeSpent: 0
-    }
-  } = useStudentData();
+  const { profile } = useAuth();
+  
+  // Mock data for demonstration
+  const isLoading = false;
+  const error = false;
+  const enrolledCourses: Course[] = [];
+  const recommendedCourses: Course[] = [];
+  const rawStats = {
+    enrolledCourses: 0,
+    certificates: 0,
+    totalProgress: 0,
+    totalTimeSpent: 0
+  };
 
   // Ensure stats has all required properties with default values
   const stats: Stats = isCompleteStats(rawStats) 
@@ -164,34 +159,11 @@ export default function StudentDashboard() {
   const [retryCount, setRetryCount] = useState(0);
   const handleRetry = () => setRetryCount(prev => prev + 1);
 
-  if (error && !isLoading) {
-    return (
-      <div className="min-h-screen bg-background flex">
-        <Sidebar />
-        <div className="flex-1 p-8 flex items-center justify-center">
-          <DashboardError onRetry={handleRetry} />
-        </div>
-      </div>
-    );
-  }
-
   return (
-    <ErrorBoundary 
-      fallback={
-        <div className="min-h-screen bg-background flex">
-          <Sidebar />
-          <div className="flex-1 p-8 flex items-center justify-center">
-            <DashboardError onRetry={() => window.location.reload()} />
-          </div>
-        </div>
-      }
-    >
-      <div className="min-h-screen bg-background flex">
-        <Sidebar />
-        <main className="flex-1 overflow-y-auto">
-          <div className="p-6 md:p-8 max-w-7xl mx-auto">
-            {/* Header */}
-            <header className="border-b pb-6 mb-8">
+    <DashboardLayout>
+      <div className="space-y-6">
+        {/* Header */}
+        <header className="border-b pb-6 mb-8">
               <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <div>
                   <h1 className="text-3xl font-bold tracking-tight">
@@ -210,24 +182,14 @@ export default function StudentDashboard() {
                     <Calendar className="h-4 w-4" />
                     <span>Today: {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' })}</span>
                   </Button>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button variant="outline" size="sm" onClick={signOut}>
-                        Sign Out
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Sign out of your account</p>
-                    </TooltipContent>
-                  </Tooltip>
                 </div>
               </div>
-            </header>
+        </header>
 
-            {/* Main Content */}
-            <TooltipProvider>
-              {/* Stats Overview */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        {/* Main Content */}
+        <TooltipProvider>
+          {/* Stats Overview */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
                 <StatCard
                   title="Enrolled Courses"
                   value={stats.enrolledCourses}
@@ -282,43 +244,10 @@ export default function StudentDashboard() {
                   tooltip="Total time spent learning this month"
                   isLoading={isLoading}
                 />
-              </div>
+          </div>
 
-              {/* Data Visualization - First Row */}
-              <div className="grid grid-cols-1 gap-6 mb-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Weekly Study Progress</CardTitle>
-                    <CardDescription>Your learning activity over the past week</CardDescription>
-                  </CardHeader>
-                  <CardContent className="h-[400px] w-full">
-                    <ProgressChart isLoading={isLoading} />
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Course Progress Section */}
-              <div className="grid grid-cols-1 gap-6 mb-8">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Course Progress</CardTitle>
-                    <CardDescription>Your progress across all enrolled courses</CardDescription>
-                  </CardHeader>
-                  <CardContent className="h-[500px] w-full">
-                    <CourseProgressChart 
-                      data={enrolledCourses.map(course => ({
-                        name: course.title,
-                        value: course.progress,
-                        color: '#0088FE'
-                      }))} 
-                      isLoading={isLoading} 
-                    />
-                  </CardContent>
-                </Card>
-              </div>
-
-              {/* Recommended Courses */}
-              <div className="mb-8">
+          {/* Recommended Courses */}
+          <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-2xl font-bold tracking-tight">Recommended For You</h2>
@@ -348,16 +277,13 @@ export default function StudentDashboard() {
                 ) : recommendedCourses.length > 0 ? (
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     {recommendedCourses.slice(0, 4).map((course) => (
-                      <CourseCard
-                        key={course.id}
-                        id={course.id}
-                        title={course.title}
-                        instructor={course.instructor}
-                        progress={course.progress}
-                        thumbnail={course.thumbnail || course.image}
-                        lastAccessed={course.lastAccessed}
-                        className="h-full"
-                      />
+                      <Card key={course.id} className="h-full">
+                        <CardContent className="p-4">
+                          <h3 className="font-medium">{course.title}</h3>
+                          <p className="text-sm text-muted-foreground">{course.instructor}</p>
+                          <Progress value={course.progress} className="mt-2" />
+                        </CardContent>
+                      </Card>
                     ))}
                   </div>
                 ) : (
@@ -370,10 +296,10 @@ export default function StudentDashboard() {
                     <Button>Update Interests</Button>
                   </div>
                 )}
-              </div>
+          </div>
 
-              {/* Quick Actions */}
-              <div className="mb-8">
+          {/* Quick Actions */}
+          <div className="mb-8">
                 <h2 className="text-2xl font-bold tracking-tight mb-4">Quick Actions</h2>
                 <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
                   <Button variant="outline" className="h-24 flex flex-col items-center justify-center gap-2 p-4 text-center">
@@ -401,10 +327,10 @@ export default function StudentDashboard() {
                     <span className="text-sm font-medium">Progress Report</span>
                   </Button>
                 </div>
-              </div>
+          </div>
 
-              {/* Learning Resources */}
-              <div className="mb-8">
+          {/* Learning Resources */}
+          <div className="mb-8">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <h2 className="text-2xl font-bold tracking-tight">Learning Resources</h2>
@@ -724,10 +650,8 @@ export default function StudentDashboard() {
                   </CardContent>
                 </Card>
               </div>
-            </TooltipProvider>
-          </div>
-        </main>
+        </TooltipProvider>
       </div>
-    </ErrorBoundary>
+    </DashboardLayout>
   );
 }

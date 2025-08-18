@@ -1,13 +1,19 @@
 import { useState } from 'react';
 import { useStudentData } from '@/hooks/useStudentData';
+import { useGamification } from '@/hooks/useGamification';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { ProgressChart } from '@/components/dashboard/ProgressChart';
 import { CourseProgressChart } from '@/components/dashboard/CourseProgressChart';
+import { LevelProgress } from '@/components/gamification/LevelProgress';
+import { BadgeDisplay } from '@/components/gamification/BadgeDisplay';
+import { Leaderboard } from '@/components/gamification/Leaderboard';
+import { PointsHistory } from '@/components/gamification/PointsHistory';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useAuth } from '@/hooks/useAuth';
 import { 
   TrendingUp, 
   Target, 
@@ -17,12 +23,25 @@ import {
   Trophy,
   Flame,
   BarChart3,
-  Settings
+  Settings,
+  Zap
 } from 'lucide-react';
 
 export default function ProgressPage() {
+  const { user } = useAuth();
   const { isLoading, enrolledCourses, stats } = useStudentData();
+  const { 
+    loading: gamificationLoading, 
+    userGamification, 
+    userBadges, 
+    allBadges, 
+    pointsHistory, 
+    leaderboard,
+    getLevelProgress 
+  } = useGamification();
   const [selectedPeriod, setSelectedPeriod] = useState('week');
+
+  const levelProgress = getLevelProgress();
 
   return (
     <DashboardLayout>
@@ -47,19 +66,59 @@ export default function ProgressPage() {
           </div>
         </div>
 
+        {/* Gamification Overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <Card className="lg:col-span-2">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Zap className="h-5 w-5 text-yellow-500" />
+                Your Level & Progress
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              {userGamification ? (
+                <LevelProgress
+                  level={userGamification.level}
+                  experience={userGamification.experience_points}
+                  progressData={levelProgress}
+                />
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  <Zap className="h-12 w-12 mx-auto mb-2 opacity-50" />
+                  <p>Loading your progress...</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Trophy className="h-5 w-5 text-yellow-500" />
+                Recent Badges
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <BadgeDisplay 
+                userBadges={userBadges} 
+                allBadges={allBadges} 
+                compact={true} 
+              />
+            </CardContent>
+          </Card>
+        </div>
+
         {/* Key Metrics */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
           <Card>
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Overall Progress</p>
-                  <p className="text-2xl font-bold">{stats.totalProgress}%</p>
-                  <div className="mt-2">
-                    <Progress value={stats.totalProgress} className="h-2" />
-                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">Total Points</p>
+                  <p className="text-2xl font-bold">{userGamification?.total_points.toLocaleString() || 0}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Level {userGamification?.level || 1}</p>
                 </div>
-                <TrendingUp className="h-8 w-8 text-blue-500" />
+                <Zap className="h-8 w-8 text-yellow-500" />
               </div>
             </CardContent>
           </Card>
@@ -69,7 +128,7 @@ export default function ProgressPage() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Study Streak</p>
-                  <p className="text-2xl font-bold">{stats.streakDays} days</p>
+                  <p className="text-2xl font-bold">{userGamification?.streak_days || 0} days</p>
                   <p className="text-xs text-muted-foreground mt-1">Keep it going!</p>
                 </div>
                 <Flame className="h-8 w-8 text-orange-500" />
@@ -94,9 +153,9 @@ export default function ProgressPage() {
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-muted-foreground">Achievements</p>
-                  <p className="text-2xl font-bold">{stats.certificates}</p>
-                  <p className="text-xs text-muted-foreground mt-1">Certificates earned</p>
+                  <p className="text-sm font-medium text-muted-foreground">Badges Earned</p>
+                  <p className="text-2xl font-bold">{userBadges.length}</p>
+                  <p className="text-xs text-muted-foreground mt-1">Out of {allBadges.length} total</p>
                 </div>
                 <Trophy className="h-8 w-8 text-yellow-500" />
               </div>
@@ -187,6 +246,34 @@ export default function ProgressPage() {
             </Card>
           </div>
         </Tabs>
+
+        {/* Gamification Sections */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>All Badges</CardTitle>
+                <CardDescription>Unlock achievements by completing courses and challenges</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <BadgeDisplay 
+                  userBadges={userBadges} 
+                  allBadges={allBadges} 
+                  compact={false} 
+                />
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="space-y-6">
+            <Leaderboard 
+              leaderboard={leaderboard} 
+              currentUserId={user?.id} 
+            />
+            
+            <PointsHistory history={pointsHistory} />
+          </div>
+        </div>
 
         {/* Course Progress Detail */}
         <Card>

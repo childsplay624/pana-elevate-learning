@@ -156,6 +156,27 @@ export default function CourseLearning() {
         setCurrentLesson(modulesWithProgress[0].lessons[0]);
       }
 
+      // Sync progress to enrollment if needed
+      if (enrollmentData && modulesWithProgress.length > 0) {
+        const totalLessons = modulesWithProgress.reduce((acc, module) => acc + module.lessons.length, 0);
+        const completedLessons = modulesWithProgress.reduce(
+          (acc, module) => acc + module.lessons.filter(l => l.progress?.completed).length,
+          0
+        );
+        const currentProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+        
+        // Update enrollment progress if it's different
+        if (currentProgress !== enrollmentData.progress_percentage) {
+          await supabase
+            .from('enrollments')
+            .update({ progress_percentage: currentProgress })
+            .eq('id', enrollmentData.id);
+          
+          // Update local enrollment state
+          setEnrollment({ ...enrollmentData, progress_percentage: currentProgress });
+        }
+      }
+
     } catch (error) {
       console.error('Error fetching course data:', error);
       toast({

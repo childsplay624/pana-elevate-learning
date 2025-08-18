@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
+import { Skeleton } from '@/components/ui/skeleton';
 import { 
   Award, 
   Download, 
@@ -11,30 +12,35 @@ import {
   Calendar,
   ExternalLink,
   Trophy,
-  Share2
+  Share2,
+  ShieldCheck,
+  Clock
 } from 'lucide-react';
-
-// Mock certificates data
-const mockCertificates = [
-  {
-    id: '1',
-    title: 'React Fundamentals Certification',
-    courseName: 'React Fundamentals',
-    instructor: 'John Doe',
-    issueDate: '2024-01-15',
-    certificateUrl: '#',
-    grade: 'A+',
-    credentialId: 'CERT-RF-2024-001'
-  }
-];
+import { useCertificates } from '@/hooks/useCertificates';
+import { toast } from 'sonner';
 
 export default function Certificates() {
   const [searchTerm, setSearchTerm] = useState('');
+  const { certificates, stats, loading, error, downloadCertificate, shareCertificate } = useCertificates();
 
-  const filteredCertificates = mockCertificates.filter(cert =>
+  const filteredCertificates = certificates.filter(cert =>
     cert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    cert.courseName.toLowerCase().includes(searchTerm.toLowerCase())
+    cert.course_title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    cert.instructor_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
+
+  const handleDownload = (certificateId: string) => {
+    downloadCertificate(certificateId);
+  };
+
+  const handleShare = (certificateId: string) => {
+    shareCertificate(certificateId);
+  };
+
+  const handleVerify = (verificationCode: string) => {
+    const verifyUrl = `/verify-certificate?code=${verificationCode}`;
+    window.open(verifyUrl, '_blank');
+  };
 
   return (
     <DashboardLayout>
@@ -48,7 +54,14 @@ export default function Certificates() {
             </p>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline">
+            <Button 
+              variant="outline"
+              onClick={() => {
+                const profileUrl = `${window.location.origin}/user-profile`;
+                navigator.clipboard.writeText(profileUrl);
+                toast.success('Profile link copied to clipboard');
+              }}
+            >
               <Share2 className="h-4 w-4 mr-2" />
               Share Profile
             </Button>
@@ -62,7 +75,11 @@ export default function Certificates() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Total Certificates</p>
-                  <p className="text-2xl font-bold">{mockCertificates.length}</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-16" />
+                  ) : (
+                    <p className="text-2xl font-bold">{stats.totalCertificates}</p>
+                  )}
                 </div>
                 <Award className="h-8 w-8 text-yellow-500" />
               </div>
@@ -74,7 +91,11 @@ export default function Certificates() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">This Month</p>
-                  <p className="text-2xl font-bold">1</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-8" />
+                  ) : (
+                    <p className="text-2xl font-bold">{stats.thisMonth}</p>
+                  )}
                 </div>
                 <Trophy className="h-8 w-8 text-blue-500" />
               </div>
@@ -86,7 +107,11 @@ export default function Certificates() {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-sm font-medium text-muted-foreground">Avg Grade</p>
-                  <p className="text-2xl font-bold">A+</p>
+                  {loading ? (
+                    <Skeleton className="h-8 w-12" />
+                  ) : (
+                    <p className="text-2xl font-bold">{stats.averageGrade}</p>
+                  )}
                 </div>
                 <Calendar className="h-8 w-8 text-green-500" />
               </div>
@@ -109,47 +134,100 @@ export default function Certificates() {
 
         {/* Certificates */}
         <div>
-          {filteredCertificates.length > 0 ? (
+          {loading ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {[...Array(3)].map((_, i) => (
+                <Card key={i}>
+                  <CardHeader className="pb-4">
+                    <div className="flex items-start justify-between">
+                      <Skeleton className="h-8 w-8" />
+                      <Skeleton className="h-6 w-12" />
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div>
+                      <Skeleton className="h-6 w-3/4 mb-2" />
+                      <Skeleton className="h-4 w-1/2 mb-1" />
+                      <Skeleton className="h-4 w-2/3" />
+                    </div>
+                    <div className="space-y-2">
+                      <Skeleton className="h-4 w-1/2" />
+                      <Skeleton className="h-3 w-1/3" />
+                    </div>
+                    <div className="flex gap-2 pt-2">
+                      <Skeleton className="h-9 flex-1" />
+                      <Skeleton className="h-9 w-12" />
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          ) : filteredCertificates.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {filteredCertificates.map((cert) => (
                 <Card key={cert.id} className="hover:shadow-lg transition-shadow">
                   <CardHeader className="pb-4">
                     <div className="flex items-start justify-between">
                       <Award className="h-8 w-8 text-yellow-500 flex-shrink-0" />
-                      <Badge variant="secondary">{cert.grade}</Badge>
+                      <Badge variant="secondary">{cert.grade || 'Completed'}</Badge>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div>
                       <h3 className="font-semibold text-lg mb-1">{cert.title}</h3>
-                      <p className="text-sm text-muted-foreground">Course: {cert.courseName}</p>
-                      <p className="text-sm text-muted-foreground">Instructor: {cert.instructor}</p>
+                      <p className="text-sm text-muted-foreground">Course: {cert.course_title}</p>
+                      <p className="text-sm text-muted-foreground">Instructor: {cert.instructor_name}</p>
+                      {cert.course_duration_hours && (
+                        <p className="text-sm text-muted-foreground">Duration: {cert.course_duration_hours} hours</p>
+                      )}
                     </div>
 
                     <div className="space-y-2">
                       <div className="flex items-center gap-2 text-sm">
                         <Calendar className="h-4 w-4" />
-                        <span>Issued: {new Date(cert.issueDate).toLocaleDateString()}</span>
+                        <span>Issued: {new Date(cert.issued_date).toLocaleDateString()}</span>
+                      </div>
+                      <div className="flex items-center gap-2 text-sm">
+                        <Clock className="h-4 w-4" />
+                        <span>Completed: {new Date(cert.completion_date).toLocaleDateString()}</span>
                       </div>
                       <div className="text-xs text-muted-foreground">
-                        ID: {cert.credentialId}
+                        Certificate: {cert.certificate_number}
+                      </div>
+                      <div className="text-xs text-muted-foreground">
+                        Verification: {cert.verification_code}
                       </div>
                     </div>
 
                     <div className="flex gap-2 pt-2">
-                      <Button size="sm" className="flex-1">
+                      <Button 
+                        size="sm" 
+                        className="flex-1"
+                        onClick={() => handleDownload(cert.id)}
+                      >
                         <Download className="h-4 w-4 mr-2" />
                         Download
                       </Button>
-                      <Button size="sm" variant="outline">
-                        <ExternalLink className="h-4 w-4" />
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleShare(cert.id)}
+                      >
+                        <Share2 className="h-4 w-4" />
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="outline"
+                        onClick={() => handleVerify(cert.verification_code)}
+                      >
+                        <ShieldCheck className="h-4 w-4" />
                       </Button>
                     </div>
                   </CardContent>
                 </Card>
               ))}
             </div>
-          ) : mockCertificates.length === 0 ? (
+          ) : certificates.length === 0 ? (
             <Card>
               <CardContent className="p-12 text-center">
                 <Award className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
@@ -157,7 +235,9 @@ export default function Certificates() {
                 <p className="text-muted-foreground mb-6">
                   Complete courses to earn your first certificate
                 </p>
-                <Button>View Available Courses</Button>
+                <Button onClick={() => window.location.href = '/courses'}>
+                  View Available Courses
+                </Button>
               </CardContent>
             </Card>
           ) : (

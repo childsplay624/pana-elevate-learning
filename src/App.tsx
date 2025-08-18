@@ -26,6 +26,7 @@ import { CourseEditor } from "./components/course-management/CourseEditor";
 import CourseCreator from "./components/course-management/CourseCreator";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
+import VerifyCertificate from "./pages/VerifyCertificate";
 
 const queryClient = new QueryClient();
 
@@ -39,6 +40,7 @@ const App = () => (
           <Routes>
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
+            <Route path="/verify-certificate" element={<VerifyCertificate />} />
             <Route path="/unauthorized" element={<Unauthorized />} />
             <Route 
               path="/dashboard" 

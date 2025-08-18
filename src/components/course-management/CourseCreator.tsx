@@ -24,6 +24,9 @@ interface Course {
   status: 'draft' | 'review' | 'published' | 'archived';
   thumbnail_url?: string;
   instructor_id: string;
+  course_type: 'self_paced' | 'live';
+  zoom_meeting_id?: string;
+  scheduled_date?: string;
 }
 
 export default function CourseCreator() {
@@ -43,7 +46,10 @@ export default function CourseCreator() {
     level: 'beginner',
     status: 'draft',
     thumbnail_url: '',
-    instructor_id: user?.id || ''
+    instructor_id: user?.id || '',
+    course_type: 'self_paced',
+    zoom_meeting_id: '',
+    scheduled_date: ''
   });
 
   const saveCourse = async () => {
@@ -80,7 +86,10 @@ export default function CourseCreator() {
             duration_hours: course.duration_hours,
             level: course.level,
             status: course.status,
-            thumbnail_url: course.thumbnail_url
+            thumbnail_url: course.thumbnail_url,
+            course_type: course.course_type,
+            zoom_meeting_id: course.zoom_meeting_id,
+            scheduled_date: course.scheduled_date
           })
           .eq('id', courseId);
 
@@ -103,7 +112,10 @@ export default function CourseCreator() {
             level: course.level,
             status: course.status,
             thumbnail_url: course.thumbnail_url,
-            instructor_id: user.id
+            instructor_id: user.id,
+            course_type: course.course_type,
+            zoom_meeting_id: course.zoom_meeting_id,
+            scheduled_date: course.scheduled_date
           })
           .select()
           .single();
@@ -232,6 +244,43 @@ export default function CourseCreator() {
                     placeholder="Describe what students will learn in this course"
                   />
                 </div>
+
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Course Type</label>
+                  <Select
+                    value={course.course_type}
+                    onValueChange={(value: 'self_paced' | 'live') => setCourse(prev => ({ ...prev, course_type: value }))}
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="self_paced">Self-Paced</SelectItem>
+                      <SelectItem value="live">Live (Zoom)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                {course.course_type === 'live' && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 p-4 border rounded-lg bg-muted/50">
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Zoom Meeting ID</label>
+                      <Input
+                        value={course.zoom_meeting_id}
+                        onChange={(e) => setCourse(prev => ({ ...prev, zoom_meeting_id: e.target.value }))}
+                        placeholder="Enter Zoom Meeting ID"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Scheduled Date & Time</label>
+                      <Input
+                        type="datetime-local"
+                        value={course.scheduled_date}
+                        onChange={(e) => setCourse(prev => ({ ...prev, scheduled_date: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                   <div className="space-y-2">

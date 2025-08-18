@@ -20,6 +20,7 @@ import Certificates from "./pages/student/Certificates";
 import Progress from "./pages/student/Progress";
 import Assignments from "./pages/student/Assignments";
 import Help from "./pages/student/Help";
+import CoursesPage from "./pages/CoursesPage";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -79,16 +80,8 @@ const App = () => (
             <Route 
               path="/dashboard/courses" 
               element={
-                <ProtectedRoute allowedRoles={['admin', 'instructor']}>
-                  <CourseManagement />
-                </ProtectedRoute>
-              } 
-            />
-            <Route 
-              path="/dashboard/student/courses" 
-              element={
-                <ProtectedRoute allowedRoles={['student']}>
-                  <MyCourses />
+                <ProtectedRoute allowedRoles={['admin', 'instructor', 'student']}>
+                  <CoursesPage />
                 </ProtectedRoute>
               } 
             />

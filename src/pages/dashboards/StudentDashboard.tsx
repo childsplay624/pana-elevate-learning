@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useStudentData } from '@/hooks/useStudentData';
 import { Button } from '@/components/ui/button';
@@ -321,13 +322,17 @@ export default function StudentDashboard() {
                   enrolledCourses={enrolledCourses} 
                   isLoading={isLoading}
                 />
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
-                  <Plus className="h-5 w-5" />
-                  <span className="text-xs">New Course</span>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm" asChild>
+                  <Link to="/dashboard/courses">
+                    <Plus className="h-5 w-5" />
+                    <span className="text-xs">New Course</span>
+                  </Link>
                 </Button>
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
-                  <Award className="h-5 w-5" />
-                  <span className="text-xs">My Certificates</span>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm" asChild>
+                  <Link to="/dashboard/certificates">
+                    <Award className="h-5 w-5" />
+                    <span className="text-xs">My Certificates</span>
+                  </Link>
                 </Button>
                 <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
                   <Calendar className="h-5 w-5" />
@@ -337,9 +342,11 @@ export default function StudentDashboard() {
                   <Target className="h-5 w-5" />
                   <span className="text-xs">Set Goals</span>
                 </Button>
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
-                  <BarChart3 className="h-5 w-5" />
-                  <span className="text-xs">Progress Report</span>
+                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm" asChild>
+                  <Link to="/dashboard/progress">
+                    <BarChart3 className="h-5 w-5" />
+                    <span className="text-xs">Progress Report</span>
+                  </Link>
                 </Button>
               </div>
             </div>

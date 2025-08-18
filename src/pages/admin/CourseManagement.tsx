@@ -120,6 +120,15 @@ export default function CourseManagement() {
   };
 
   const addCourse = async () => {
+    if (!newCourse.instructor_id) {
+      toast({
+        title: 'Error',
+        description: 'Please select an instructor',
+        variant: 'destructive'
+      });
+      return;
+    }
+
     try {
       const { error } = await supabase
         .from('courses')

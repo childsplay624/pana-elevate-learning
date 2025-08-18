@@ -88,27 +88,16 @@ export default function UserManagement() {
 
   const addUser = async () => {
     try {
-      const { data: authData, error: authError } = await supabase.auth.admin.createUser({
-        email: newUser.email,
-        password: newUser.password,
-        user_metadata: {
-          full_name: newUser.full_name
+      const { data, error } = await supabase.functions.invoke('create-user', {
+        body: {
+          email: newUser.email,
+          password: newUser.password,
+          full_name: newUser.full_name,
+          role: newUser.role
         }
       });
 
-      if (authError) throw authError;
-
-      if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('profiles')
-          .update({ 
-            full_name: newUser.full_name,
-            role: newUser.role 
-          })
-          .eq('id', authData.user.id);
-
-        if (profileError) throw profileError;
-      }
+      if (error) throw error;
 
       setIsAddUserOpen(false);
       setNewUser({ email: '', password: '', full_name: '', role: 'student' });

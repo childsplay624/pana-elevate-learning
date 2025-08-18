@@ -122,6 +122,42 @@ export type Database = {
           },
         ]
       }
+      badges: {
+        Row: {
+          color: string | null
+          created_at: string
+          description: string | null
+          icon: string | null
+          id: string
+          name: string
+          points_reward: number | null
+          requirement_type: string
+          requirement_value: number
+        }
+        Insert: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name: string
+          points_reward?: number | null
+          requirement_type: string
+          requirement_value: number
+        }
+        Update: {
+          color?: string | null
+          created_at?: string
+          description?: string | null
+          icon?: string | null
+          id?: string
+          name?: string
+          points_reward?: number | null
+          requirement_type?: string
+          requirement_value?: number
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           category: Database["public"]["Enums"]["course_category"]
@@ -389,6 +425,36 @@ export type Database = {
         }
         Relationships: []
       }
+      points_history: {
+        Row: {
+          action_type: string
+          created_at: string
+          description: string | null
+          id: string
+          points: number
+          reference_id: string | null
+          user_id: string
+        }
+        Insert: {
+          action_type: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          points: number
+          reference_id?: string | null
+          user_id: string
+        }
+        Update: {
+          action_type?: string
+          created_at?: string
+          description?: string | null
+          id?: string
+          points?: number
+          reference_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -583,12 +649,95 @@ export type Database = {
           },
         ]
       }
+      user_badges: {
+        Row: {
+          badge_id: string
+          earned_at: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          badge_id: string
+          earned_at?: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          badge_id?: string
+          earned_at?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_badges_badge_id_fkey"
+            columns: ["badge_id"]
+            isOneToOne: false
+            referencedRelation: "badges"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_gamification: {
+        Row: {
+          created_at: string
+          experience_points: number
+          id: string
+          last_activity_date: string | null
+          level: number
+          streak_days: number
+          total_points: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          experience_points?: number
+          id?: string
+          last_activity_date?: string | null
+          level?: number
+          streak_days?: number
+          total_points?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          experience_points?: number
+          id?: string
+          last_activity_date?: string | null
+          level?: number
+          streak_days?: number
+          total_points?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
+      award_points: {
+        Args: {
+          _action_type: string
+          _description?: string
+          _points: number
+          _reference_id?: string
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      calculate_user_level: {
+        Args: { exp_points: number }
+        Returns: number
+      }
       is_admin: {
+        Args: { _user_id: string }
+        Returns: boolean
+      }
+      update_user_streak: {
         Args: { _user_id: string }
         Returns: boolean
       }

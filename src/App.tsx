@@ -13,6 +13,8 @@ import InstructorDashboard from "./pages/dashboards/InstructorDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import CourseManagement from "./pages/admin/CourseManagement";
+import Analytics from "./pages/admin/Analytics";
+import Settings from "./pages/admin/Settings";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -74,6 +76,22 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={['admin', 'instructor']}>
                   <CourseManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/analytics" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <Analytics />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/settings" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <Settings />
                 </ProtectedRoute>
               } 
             />

@@ -143,7 +143,9 @@ export default function AdminDashboard() {
                 <p className="text-sm text-muted-foreground mb-4">
                   Analytics will be available once users start engaging with the platform.
                 </p>
-                <Button variant="outline">View Reports</Button>
+                <Button variant="outline" asChild>
+                  <a href="/dashboard/analytics">View Analytics</a>
+                </Button>
               </div>
             </CardContent>
           </Card>
@@ -172,8 +174,8 @@ export default function AdminDashboard() {
                   <span className="text-sm">Payment Gateway</span>
                   <Badge variant="outline">Ready</Badge>
                 </div>
-                <Button variant="outline" className="w-full">
-                  Configure Settings
+                <Button variant="outline" className="w-full" asChild>
+                  <a href="/dashboard/settings">Configure Settings</a>
                 </Button>
               </div>
             </CardContent>

@@ -177,6 +177,21 @@ export function useStudentData() {
 
       } catch (err) {
         console.error('Error fetching student data:', err);
+        console.error('Error details:', err);
+        
+        // Set empty data instead of leaving it undefined
+        setEnrolledCourses([]);
+        setRecommendedCourses([]);
+        setStats({
+          enrolledCourses: 0,
+          certificates: 0,
+          totalProgress: 0,
+          totalTimeSpent: 0,
+          weeklyGoalProgress: 0,
+          completedCourses: 0,
+          streakDays: 0
+        });
+        
         setError(err instanceof Error ? err.message : 'Failed to fetch data');
       } finally {
         setIsLoading(false);

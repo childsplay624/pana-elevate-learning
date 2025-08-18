@@ -167,6 +167,7 @@ export default function StudentDashboard() {
   const handleRetry = () => setRetryCount(prev => prev + 1);
 
   if (error && !isLoading) {
+    console.error('Dashboard error:', error);
     return (
       <DashboardLayout>
         <div className="p-8 flex items-center justify-center">

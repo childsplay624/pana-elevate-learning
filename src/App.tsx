@@ -11,6 +11,8 @@ import Dashboard from "./pages/Dashboard";
 import StudentDashboard from "./pages/dashboards/StudentDashboard";
 import InstructorDashboard from "./pages/dashboards/InstructorDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import UserManagement from "./pages/admin/UserManagement";
+import CourseManagement from "./pages/admin/CourseManagement";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -56,6 +58,22 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={['admin']}>
                   <AdminDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/users" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <UserManagement />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/courses" 
+              element={
+                <ProtectedRoute allowedRoles={['admin', 'instructor']}>
+                  <CourseManagement />
                 </ProtectedRoute>
               } 
             />

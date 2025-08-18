@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
+import { FileUpload } from './FileUpload';
 import {
   Plus,
   Edit,
@@ -17,7 +18,8 @@ import {
   Video,
   FileText,
   Clock,
-  Play
+  Play,
+  Paperclip
 } from 'lucide-react';
 
 interface Lesson {
@@ -30,6 +32,7 @@ interface Lesson {
   order_index: number;
   is_free: boolean;
   module_id: string;
+  file_urls: string[] | null;
 }
 
 interface LessonManagerProps {
@@ -49,7 +52,8 @@ export function LessonManager({ moduleId, lessons, canEdit, onLessonsUpdate }: L
     video_url: '',
     lesson_type: 'video' as string,
     duration_minutes: 0,
-    is_free: false
+    is_free: false,
+    file_urls: [] as string[]
   });
 
   const addLesson = async () => {
@@ -75,7 +79,8 @@ export function LessonManager({ moduleId, lessons, canEdit, onLessonsUpdate }: L
           duration_minutes: newLesson.duration_minutes,
           is_free: newLesson.is_free,
           module_id: moduleId,
-          order_index: nextOrderIndex
+          order_index: nextOrderIndex,
+          file_urls: newLesson.file_urls.length > 0 ? newLesson.file_urls : null
         });
 
       if (error) throw error;
@@ -87,7 +92,8 @@ export function LessonManager({ moduleId, lessons, canEdit, onLessonsUpdate }: L
         video_url: '',
         lesson_type: 'video',
         duration_minutes: 0,
-        is_free: false
+        is_free: false,
+        file_urls: []
       });
       onLessonsUpdate();
       
@@ -124,7 +130,8 @@ export function LessonManager({ moduleId, lessons, canEdit, onLessonsUpdate }: L
           video_url: editingLesson.video_url,
           lesson_type: editingLesson.lesson_type,
           duration_minutes: editingLesson.duration_minutes,
-          is_free: editingLesson.is_free
+          is_free: editingLesson.is_free,
+          file_urls: editingLesson.file_urls
         })
         .eq('id', editingLesson.id);
 
@@ -397,6 +404,21 @@ export function LessonManager({ moduleId, lessons, canEdit, onLessonsUpdate }: L
                   </span>
                 </div>
               </div>
+
+              <div className="col-span-4">
+                <FileUpload
+                  onFileUpload={(fileUrl, fileName) => {
+                    setEditingLesson(prev => prev ? {
+                      ...prev,
+                      file_urls: [...(prev.file_urls || []), fileUrl]
+                    } : null);
+                  }}
+                  existingFiles={editingLesson.file_urls || []}
+                  multiple={true}
+                  accept="video/*,application/pdf,image/*,.doc,.docx,.txt"
+                  description="Upload lesson materials (videos, documents, images)"
+                />
+              </div>
             </div>
             <DialogFooter>
               <Button onClick={updateLesson}>Update Lesson</Button>
@@ -450,6 +472,12 @@ export function LessonManager({ moduleId, lessons, canEdit, onLessonsUpdate }: L
                       {lesson.duration_minutes} min
                     </span>
                     <span>{lesson.lesson_type || 'Lesson'}</span>
+                    {lesson.file_urls && lesson.file_urls.length > 0 && (
+                      <span className="flex items-center gap-1">
+                        <Paperclip className="h-3 w-3" />
+                        {lesson.file_urls.length} file{lesson.file_urls.length !== 1 ? 's' : ''}
+                      </span>
+                    )}
                   </div>
                 </div>
               </div>

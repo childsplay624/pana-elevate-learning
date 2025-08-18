@@ -83,6 +83,7 @@ export type Database = {
           created_at: string
           description: string | null
           due_date: string | null
+          file_url: string | null
           id: string
           instructions: string | null
           lesson_id: string
@@ -94,6 +95,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           due_date?: string | null
+          file_url?: string | null
           id?: string
           instructions?: string | null
           lesson_id: string
@@ -105,6 +107,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           due_date?: string | null
+          file_url?: string | null
           id?: string
           instructions?: string | null
           lesson_id?: string
@@ -315,6 +318,7 @@ export type Database = {
           content: string | null
           created_at: string
           duration_minutes: number | null
+          file_urls: string[] | null
           id: string
           is_free: boolean | null
           lesson_type: string | null
@@ -328,6 +332,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           duration_minutes?: number | null
+          file_urls?: string[] | null
           id?: string
           is_free?: boolean | null
           lesson_type?: string | null
@@ -341,6 +346,7 @@ export type Database = {
           content?: string | null
           created_at?: string
           duration_minutes?: number | null
+          file_urls?: string[] | null
           id?: string
           is_free?: boolean | null
           lesson_type?: string | null

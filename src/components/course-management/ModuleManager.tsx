@@ -37,6 +37,7 @@ interface Lesson {
   order_index: number;
   is_free: boolean;
   module_id: string;
+  file_urls: string[] | null;
 }
 
 interface ModuleManagerProps {
@@ -75,7 +76,8 @@ export function ModuleManager({ courseId, canEdit }: ModuleManagerProps) {
             lesson_type,
             duration_minutes,
             order_index,
-            is_free
+            is_free,
+            file_urls
           )
         `)
         .eq('course_id', courseId)

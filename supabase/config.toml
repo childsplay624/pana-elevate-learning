@@ -1,7 +1,1 @@
 project_id = "emodwlslhgmwsadlhuyq"
-
-[functions.update-submission]
-verify_jwt = false
-
-[functions.create-zoom-meeting]
-verify_jwt = false

@@ -235,10 +235,13 @@ export default function CourseCreator() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Price (₦)</label>
                     <Input
-                      type="number"
+                      type="text"
                       value={course.price}
-                      onChange={(e) => setCourse(prev => ({ ...prev, price: Number(e.target.value) }))}
-                      min="0"
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        setCourse(prev => ({ ...prev, price: Number(value) || 0 }));
+                      }}
+                      placeholder="0"
                     />
                   </div>
                   <div className="space-y-2">

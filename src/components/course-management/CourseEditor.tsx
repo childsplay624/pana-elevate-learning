@@ -343,10 +343,14 @@ export function CourseEditor() {
                   <div className="space-y-2">
                     <label className="text-sm font-medium">Price (₦)</label>
                     <Input
-                      type="number"
+                      type="text"
                       value={course.price}
-                      onChange={(e) => setCourse(prev => prev ? { ...prev, price: Number(e.target.value) } : null)}
+                      onChange={(e) => {
+                        const value = e.target.value.replace(/[^0-9]/g, '');
+                        setCourse(prev => prev ? { ...prev, price: Number(value) || 0 } : null);
+                      }}
                       disabled={!canEdit}
+                      placeholder="0"
                     />
                   </div>
                   <div className="space-y-2">

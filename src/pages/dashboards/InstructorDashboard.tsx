@@ -1,34 +1,16 @@
-import { useAuth } from '@/hooks/useAuth';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { BookOpen, Users, BarChart, Plus } from 'lucide-react';
+import { BookOpen, Users, TrendingUp, DollarSign, Plus } from 'lucide-react';
+import { DashboardLayout } from '@/components/DashboardLayout';
+import { useAuth } from '@/hooks/useAuth';
+import { Button } from '@/components/ui/button';
 
 export default function InstructorDashboard() {
-  const { profile, signOut } = useAuth();
+  const { profile } = useAuth();
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b bg-white">
-        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="flex items-center space-x-4">
-            <h1 className="text-2xl font-bold text-primary">PANA Academy</h1>
-            <Badge variant="secondary">{profile?.role}</Badge>
-          </div>
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-muted-foreground">
-              Welcome, {profile?.full_name}
-            </span>
-            <Button variant="outline" onClick={signOut}>
-              Sign Out
-            </Button>
-          </div>
-        </div>
-      </header>
-
-      {/* Dashboard Content */}
-      <main className="container mx-auto px-4 py-8">
+    <DashboardLayout>
+      <div className="container mx-auto px-6 py-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           {/* Quick Stats */}
           <Card>
@@ -60,7 +42,7 @@ export default function InstructorDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Course Completion</CardTitle>
-              <BarChart className="h-4 w-4 text-muted-foreground" />
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">0%</div>
@@ -73,7 +55,7 @@ export default function InstructorDashboard() {
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Revenue</CardTitle>
-              <BarChart className="h-4 w-4 text-muted-foreground" />
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
               <div className="text-2xl font-bold">₦0</div>
@@ -123,7 +105,7 @@ export default function InstructorDashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-center py-8">
-                <BarChart className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
+                <TrendingUp className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
                 <h3 className="text-lg font-semibold mb-2">No analytics available</h3>
                 <p className="text-muted-foreground mb-4">
                   Analytics will appear once you have courses with enrolled students.
@@ -133,7 +115,7 @@ export default function InstructorDashboard() {
             </CardContent>
           </Card>
         </div>
-      </main>
-    </div>
+      </div>
+    </DashboardLayout>
   );
 }

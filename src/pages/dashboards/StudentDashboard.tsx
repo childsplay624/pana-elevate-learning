@@ -12,6 +12,7 @@ import {
   BarChart3, Flame, Activity, FileType, Eye
 } from 'lucide-react';
 import { CourseCard } from '@/components/dashboard/CourseCard';
+import { ContinueLearning } from '@/components/ContinueLearning';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Progress } from '@/components/ui/progress';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -315,10 +316,10 @@ export default function StudentDashboard() {
             <div className="mb-8">
               <h2 className="text-xl font-bold tracking-tight mb-4">Quick Actions</h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
-                  <Play className="h-5 w-5" />
-                  <span className="text-xs">Continue Learning</span>
-                </Button>
+                <ContinueLearning 
+                  enrolledCourses={enrolledCourses} 
+                  isLoading={isLoading}
+                />
                 <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
                   <Plus className="h-5 w-5" />
                   <span className="text-xs">New Course</span>

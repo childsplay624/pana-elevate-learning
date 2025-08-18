@@ -15,6 +15,9 @@ interface Course {
   category: string;
   totalHours: number;
   image?: string | null;
+  instructor_name?: string;
+  enrollment_id?: string;
+  course_id?: string;
 }
 
 interface Stats {
@@ -51,76 +54,96 @@ export function useStudentData() {
         setIsLoading(true);
         setError(null);
 
-        // Fetch enrolled courses
-        const { data: coursesData, error: coursesError } = await supabase
+        // Fetch enrolled courses with instructor details
+        const { data: enrollmentsData, error: enrollmentsError } = await supabase
+          .from('enrollments')
+          .select(`
+            id,
+            course_id,
+            progress_percentage,
+            enrolled_at,
+            courses (
+              id,
+              title,
+              description,
+              category,
+              duration_hours,
+              thumbnail_url,
+              profiles!courses_instructor_id_fkey (
+                full_name
+              )
+            )
+          `)
+          .eq('student_id', user.id)
+          .eq('status', 'enrolled');
+
+        if (enrollmentsError) throw enrollmentsError;
+
+        // Transform enrolled courses data
+        const transformedEnrolledCourses: Course[] = (enrollmentsData || []).map((enrollment: any) => ({
+          id: enrollment.courses.id,
+          course_id: enrollment.course_id,
+          enrollment_id: enrollment.id,
+          title: enrollment.courses.title,
+          instructor: enrollment.courses.profiles?.full_name || 'Unknown Instructor',
+          instructor_name: enrollment.courses.profiles?.full_name || 'Unknown Instructor',
+          progress: enrollment.progress_percentage || 0,
+          thumbnail: enrollment.courses.thumbnail_url,
+          lastAccessed: enrollment.enrolled_at,
+          timeSpent: Math.floor(Math.random() * 180) + 30, // Mock time spent for now
+          category: enrollment.courses.category || 'General',
+          totalHours: enrollment.courses.duration_hours || 0,
+          image: enrollment.courses.thumbnail_url
+        }));
+
+        // Fetch recommended courses (published courses not enrolled in)
+        const enrolledCourseIds = transformedEnrolledCourses.map(course => course.course_id);
+        
+        const { data: recommendedData, error: recommendedError } = await supabase
           .from('courses')
-          .select('*')
-          .limit(10);
+          .select(`
+            id,
+            title,
+            description,
+            category,
+            duration_hours,
+            thumbnail_url,
+            profiles!courses_instructor_id_fkey (
+              full_name
+            )
+          `)
+          .eq('status', 'published')
+          .not('id', 'in', `(${enrolledCourseIds.length > 0 ? enrolledCourseIds.join(',') : 'null'})`)
+          .limit(4);
 
-        if (coursesError) throw coursesError;
+        if (recommendedError) throw recommendedError;
 
-        // Mock enrolled courses data
-        const mockEnrolledCourses: Course[] = [
-          {
-            id: '1',
-            title: 'React Fundamentals',
-            instructor: 'John Doe',
-            progress: 65,
-            thumbnail: null,
-            lastAccessed: '2024-01-15',
-            timeSpent: 120,
-            category: 'Frontend',
-            totalHours: 40
-          },
-          {
-            id: '2',
-            title: 'Advanced TypeScript',
-            instructor: 'Jane Smith',
-            progress: 30,
-            thumbnail: null,
-            lastAccessed: '2024-01-14',
-            timeSpent: 80,
-            category: 'Programming',
-            totalHours: 35
-          }
-        ];
+        // Transform recommended courses data
+        const transformedRecommendedCourses: Course[] = (recommendedData || []).map((course: any) => ({
+          id: course.id,
+          title: course.title,
+          instructor: course.profiles?.full_name || 'Unknown Instructor',
+          instructor_name: course.profiles?.full_name || 'Unknown Instructor',
+          progress: 0,
+          thumbnail: course.thumbnail_url,
+          timeSpent: 0,
+          category: course.category || 'General',
+          totalHours: course.duration_hours || 0,
+          image: course.thumbnail_url,
+          isNew: Math.random() > 0.7,
+          isTrending: Math.random() > 0.8
+        }));
 
-        // Mock recommended courses
-        const mockRecommendedCourses: Course[] = [
-          {
-            id: '3',
-            title: 'Node.js Backend Development',
-            instructor: 'Mike Johnson',
-            progress: 0,
-            thumbnail: null,
-            timeSpent: 0,
-            category: 'Backend',
-            totalHours: 50,
-            isNew: true
-          },
-          {
-            id: '4',
-            title: 'Database Design',
-            instructor: 'Sarah Wilson',
-            progress: 0,
-            thumbnail: null,
-            timeSpent: 0,
-            category: 'Database',
-            totalHours: 30,
-            isTrending: true
-          }
-        ];
-
-        setEnrolledCourses(mockEnrolledCourses);
-        setRecommendedCourses(mockRecommendedCourses);
+        setEnrolledCourses(transformedEnrolledCourses);
+        setRecommendedCourses(transformedRecommendedCourses);
         
         // Calculate stats
-        const enrolledCount = mockEnrolledCourses.length;
+        const enrolledCount = transformedEnrolledCourses.length;
         const totalProgress = enrolledCount > 0 
-          ? Math.round(mockEnrolledCourses.reduce((acc, course) => acc + course.progress, 0) / enrolledCount)
+          ? Math.round(transformedEnrolledCourses.reduce((acc, course) => acc + course.progress, 0) / enrolledCount)
           : 0;
-        const totalTimeSpent = mockEnrolledCourses.reduce((acc, course) => acc + course.timeSpent, 0);
-        const completedCourses = mockEnrolledCourses.filter(course => course.progress === 100).length;
+        const totalTimeSpent = transformedEnrolledCourses.reduce((acc, course) => acc + course.timeSpent, 0);
+        const completedCourses = transformedEnrolledCourses.filter(course => course.progress === 100).length;
 
         setStats({
           enrolledCourses: enrolledCount,

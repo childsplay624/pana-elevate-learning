@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { LogoUpload } from '@/components/LogoUpload';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { 
@@ -611,36 +612,27 @@ export default function Settings() {
                        onCheckedChange={(checked) => updateSetting('dark_mode_support', checked)}
                      />
                    </div>
-                   <div className="space-y-2">
-                     <Label htmlFor="logo-url">Frontend Logo URL</Label>
-                     <Input 
-                       id="logo-url" 
-                       placeholder="https://example.com/logo.png or upload an image"
-                       value={settings.logo_url || ''} 
-                       onChange={(e) => updateSetting('logo_url', e.target.value)}
-                     />
-                     <p className="text-sm text-muted-foreground">Logo displayed on the main website and student dashboard</p>
-                   </div>
-                   <div className="space-y-2">
-                     <Label htmlFor="backend-logo-url">Admin/Backend Logo URL</Label>
-                     <Input 
-                       id="backend-logo-url" 
-                       placeholder="https://example.com/admin-logo.png or upload an image"
-                       value={settings.backend_logo_url || ''} 
-                       onChange={(e) => updateSetting('backend_logo_url', e.target.value)}
-                     />
-                     <p className="text-sm text-muted-foreground">Logo displayed in admin dashboard and backend interfaces</p>
-                   </div>
-                   <div className="space-y-2">
-                     <Label htmlFor="favicon-url">Favicon URL</Label>
-                     <Input 
-                       id="favicon-url" 
-                       placeholder="https://example.com/favicon.png"
-                       value={settings.favicon_url || ''} 
-                       onChange={(e) => updateSetting('favicon_url', e.target.value)}
-                     />
-                     <p className="text-sm text-muted-foreground">Small icon displayed in browser tabs (PNG/JPG format only)</p>
-                   </div>
+                   <LogoUpload
+                     label="Frontend Logo"
+                     description="Logo displayed on the main website and student dashboard"
+                     value={settings.logo_url || ''}
+                     onChange={(url) => updateSetting('logo_url', url)}
+                     placeholder="https://example.com/logo.png"
+                   />
+                   <LogoUpload
+                     label="Admin/Backend Logo"
+                     description="Logo displayed in admin dashboard and backend interfaces"
+                     value={settings.backend_logo_url || ''}
+                     onChange={(url) => updateSetting('backend_logo_url', url)}
+                     placeholder="https://example.com/admin-logo.png"
+                   />
+                   <LogoUpload
+                     label="Favicon"
+                     description="Small icon displayed in browser tabs (PNG/JPG format only)"
+                     value={settings.favicon_url || ''}
+                     onChange={(url) => updateSetting('favicon_url', url)}
+                     placeholder="https://example.com/favicon.png"
+                   />
                  </div>
                  <Button onClick={() => handleSave('Appearance')} disabled={saving}>
                   <Save className="w-4 h-4 mr-2" />

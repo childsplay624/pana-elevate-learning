@@ -201,6 +201,24 @@ export default function CourseLearning() {
         }))
       );
 
+      // Update enrollment progress
+      const totalLessons = modules.reduce((acc, module) => acc + module.lessons.length, 0);
+      const completedLessons = modules.reduce(
+        (acc, module) => acc + module.lessons.filter(l => 
+          l.progress?.completed || l.id === lesson.id
+        ).length,
+        0
+      );
+      const newProgress = totalLessons > 0 ? Math.round((completedLessons / totalLessons) * 100) : 0;
+
+      // Update enrollment progress in database
+      if (enrollment?.id) {
+        await supabase
+          .from('enrollments')
+          .update({ progress_percentage: newProgress })
+          .eq('id', enrollment.id);
+      }
+
       toast({
         title: "Lesson Completed! 🎉",
         description: `You earned 50 points for completing "${lesson.title}"`,

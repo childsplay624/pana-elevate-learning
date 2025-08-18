@@ -116,9 +116,9 @@ const StatCard: React.FC<StatCardProps> = ({
       ) : (
         <div className="text-2xl font-bold">{value}</div>
       )}
-      <p className="text-xs text-muted-foreground">
+      <div className="text-xs text-muted-foreground">
         {isLoading ? <Skeleton className="h-4 w-32 mt-1" /> : description}
-      </p>
+      </div>
     </CardContent>
   </Card>
 );
@@ -260,9 +260,9 @@ export default function StudentDashboard() {
                 description={
                   <div className="mt-1">
                     <Progress value={stats.totalProgress} className="h-2" />
-                    <p className="text-xs text-muted-foreground mt-1">
+                    <span className="text-xs text-muted-foreground mt-1 block">
                       Overall completion rate
-                    </p>
+                    </span>
                   </div>
                 }
                 icon={TrendingUp}
@@ -328,12 +328,24 @@ export default function StudentDashboard() {
                     <span className="text-xs">New Course</span>
                   </Link>
                 </Button>
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm" asChild>
-                  <Link to="/dashboard/certificates">
+                {stats.certificates > 0 ? (
+                  <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm" asChild>
+                    <Link to="/dashboard/certificates">
+                      <Award className="h-5 w-5" />
+                      <span className="text-xs">My Certificates</span>
+                    </Link>
+                  </Button>
+                ) : (
+                  <Button 
+                    variant="outline" 
+                    className="h-20 flex flex-col gap-2 opacity-50 cursor-not-allowed" 
+                    size="sm"
+                    disabled
+                  >
                     <Award className="h-5 w-5" />
-                    <span className="text-xs">My Certificates</span>
-                  </Link>
-                </Button>
+                    <span className="text-xs">No Certificates</span>
+                  </Button>
+                )}
                 <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
                   <Calendar className="h-5 w-5" />
                   <span className="text-xs">Study Schedule</span>

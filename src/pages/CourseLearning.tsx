@@ -30,11 +30,11 @@ interface Course {
   instructor_id: string;
   thumbnail_url: string | null;
   duration_hours: number;
-  level: string;
+  level: string | null;
   category: string;
   profiles: {
     full_name: string | null;
-  };
+  } | null;
 }
 
 interface Module {
@@ -313,7 +313,7 @@ export default function CourseLearning() {
             <div className="flex-1">
               <h1 className="text-2xl font-bold">{course.title}</h1>
               <p className="text-muted-foreground">
-                by {course.profiles.full_name} • {course.level} • {course.duration_hours}h
+                by {course.profiles?.full_name || 'Unknown Instructor'} • {course.level || 'All Levels'} • {course.duration_hours}h
               </p>
             </div>
             <div className="flex items-center gap-2">
@@ -370,7 +370,7 @@ export default function CourseLearning() {
                         </div>
                         <div className="flex items-center gap-2">
                           <Award className="h-4 w-4 text-muted-foreground" />
-                          <span>{course.level} level</span>
+                          <span>{course.level || 'All Levels'} level</span>
                         </div>
                       </div>
                     </div>

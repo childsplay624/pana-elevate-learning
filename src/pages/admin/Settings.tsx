@@ -87,7 +87,7 @@ export default function Settings() {
           case 'Notifications':
             return ['email_notifications', 'course_completion_alerts', 'payment_notifications', 'system_maintenance_alerts', 'admin_email'].includes(key);
           case 'Payment':
-            return ['paystack_enabled', 'flutterwave_enabled', 'default_currency', 'platform_fee'].includes(key);
+            return ['paystack_enabled', 'flutterwave_enabled', 'default_currency', 'platform_fee', 'paystack_public_key', 'paystack_secret_key', 'flutterwave_public_key', 'flutterwave_secret_key'].includes(key);
           case 'Courses':
             return ['course_auto_approval', 'enable_course_reviews', 'certificate_generation', 'max_enrollment', 'certificate_validity', 'zoom_api_key', 'zoom_api_secret'].includes(key);
           case 'Appearance':
@@ -346,44 +346,101 @@ export default function Settings() {
                 </CardTitle>
                 <CardDescription>Configure payment gateways and pricing</CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-base">Paystack Integration</Label>
-                      <p className="text-sm text-muted-foreground">Enable Paystack payment gateway</p>
-                    </div>
-                    <Badge variant="outline" className="text-green-600">Connected</Badge>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <Label className="text-base">Flutterwave Integration</Label>
-                      <p className="text-sm text-muted-foreground">Enable Flutterwave payment gateway</p>
-                    </div>
-                    <Badge variant="outline">Not Connected</Badge>
-                  </div>
+               <CardContent className="space-y-6">
+                 <div className="space-y-4">
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <Label className="text-base">Paystack Integration</Label>
+                       <p className="text-sm text-muted-foreground">Enable Paystack payment gateway</p>
+                     </div>
+                     <Switch 
+                       checked={settings.paystack_enabled || false}
+                       onCheckedChange={(checked) => updateSetting('paystack_enabled', checked)}
+                     />
+                   </div>
+                   <div className="grid grid-cols-1 gap-4">
+                     <div className="space-y-2">
+                       <Label htmlFor="paystack-public-key">Paystack Public Key</Label>
+                       <Input 
+                         id="paystack-public-key" 
+                         placeholder="pk_test_..."
+                         value={settings.paystack_public_key || ''} 
+                         onChange={(e) => updateSetting('paystack_public_key', e.target.value)}
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="paystack-secret-key">Paystack Secret Key</Label>
+                       <Input 
+                         id="paystack-secret-key" 
+                         type="password"
+                         placeholder="sk_test_..."
+                         value={settings.paystack_secret_key || ''} 
+                         onChange={(e) => updateSetting('paystack_secret_key', e.target.value)}
+                       />
+                     </div>
+                   </div>
+                   <div className="flex items-center justify-between">
+                     <div>
+                       <Label className="text-base">Flutterwave Integration</Label>
+                       <p className="text-sm text-muted-foreground">Enable Flutterwave payment gateway</p>
+                     </div>
+                     <Switch 
+                       checked={settings.flutterwave_enabled || false}
+                       onCheckedChange={(checked) => updateSetting('flutterwave_enabled', checked)}
+                     />
+                   </div>
+                   <div className="grid grid-cols-1 gap-4">
+                     <div className="space-y-2">
+                       <Label htmlFor="flutterwave-public-key">Flutterwave Public Key</Label>
+                       <Input 
+                         id="flutterwave-public-key" 
+                         placeholder="FLWPUBK_TEST-..."
+                         value={settings.flutterwave_public_key || ''} 
+                         onChange={(e) => updateSetting('flutterwave_public_key', e.target.value)}
+                       />
+                     </div>
+                     <div className="space-y-2">
+                       <Label htmlFor="flutterwave-secret-key">Flutterwave Secret Key</Label>
+                       <Input 
+                         id="flutterwave-secret-key" 
+                         type="password"
+                         placeholder="FLWSECK_TEST-..."
+                         value={settings.flutterwave_secret_key || ''} 
+                         onChange={(e) => updateSetting('flutterwave_secret_key', e.target.value)}
+                       />
+                     </div>
+                   </div>
                 </div>
                 <Separator />
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="default-currency">Default Currency</Label>
-                    <Select defaultValue="NGN">
-                      <SelectTrigger>
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="NGN">Nigerian Naira (₦)</SelectItem>
-                        <SelectItem value="USD">US Dollar ($)</SelectItem>
-                        <SelectItem value="EUR">Euro (€)</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="platform-fee">Platform Fee (%)</Label>
-                    <Input id="platform-fee" type="number" defaultValue="10" step="0.1" />
-                  </div>
-                </div>
-                <Button onClick={() => handleSave('Payment')} disabled={loading}>
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                   <div className="space-y-2">
+                     <Label htmlFor="default-currency">Default Currency</Label>
+                     <Select 
+                       value={settings.default_currency || 'NGN'} 
+                       onValueChange={(value) => updateSetting('default_currency', value)}
+                     >
+                       <SelectTrigger>
+                         <SelectValue />
+                       </SelectTrigger>
+                       <SelectContent>
+                         <SelectItem value="NGN">Nigerian Naira (₦)</SelectItem>
+                         <SelectItem value="USD">US Dollar ($)</SelectItem>
+                         <SelectItem value="EUR">Euro (€)</SelectItem>
+                       </SelectContent>
+                     </Select>
+                   </div>
+                   <div className="space-y-2">
+                     <Label htmlFor="platform-fee">Platform Fee (%)</Label>
+                     <Input 
+                       id="platform-fee" 
+                       type="number" 
+                       step="0.1" 
+                       value={settings.platform_fee || 10} 
+                       onChange={(e) => updateSetting('platform_fee', parseFloat(e.target.value))}
+                     />
+                   </div>
+                 </div>
+                 <Button onClick={() => handleSave('Payment')} disabled={saving}>
                   <Save className="w-4 h-4 mr-2" />
                   {loading ? 'Saving...' : 'Save Changes'}
                 </Button>

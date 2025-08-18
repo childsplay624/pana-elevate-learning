@@ -280,8 +280,8 @@ export default function StudentDashboard() {
               />
             </div>
 
-            {/* Data Visualization */}
-            <div className="grid grid-cols-1 gap-6 mb-8">
+            {/* Data Visualization - Side by Side Charts */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <Card>
                 <CardHeader>
                   <CardTitle>Weekly Study Progress</CardTitle>
@@ -291,16 +291,13 @@ export default function StudentDashboard() {
                   <ProgressChart isLoading={isLoading} />
                 </CardContent>
               </Card>
-            </div>
 
-            {/* Course Progress Section */}
-            <div className="grid grid-cols-1 gap-6 mb-8">
               <Card>
                 <CardHeader>
                   <CardTitle>Course Progress</CardTitle>
                   <CardDescription>Your progress across all enrolled courses</CardDescription>
                 </CardHeader>
-                <CardContent className="h-[500px] w-full">
+                <CardContent className="h-[400px] w-full">
                   <CourseProgressChart 
                     data={enrolledCourses.map(course => ({
                       name: course.title,

@@ -219,6 +219,25 @@ export default function CourseLearning() {
           .eq('id', enrollment.id);
       }
 
+      // If completed, award certificate and mark enrollment as completed
+      if (newProgress === 100 && enrollment?.id && user?.id && courseId) {
+        const { error: certError } = await supabase.rpc('award_certificate', {
+          _user_id: user.id,
+          _course_id: courseId,
+          _enrollment_id: enrollment.id,
+        });
+        if (certError) {
+          console.error('Error awarding certificate:', certError);
+        } else {
+          const { data: refreshed } = await supabase
+            .from('enrollments')
+            .select('*')
+            .eq('id', enrollment.id)
+            .maybeSingle();
+          setEnrollment(refreshed);
+        }
+      }
+
       toast({
         title: "Lesson Completed! 🎉",
         description: `You earned 50 points for completing "${lesson.title}"`,

@@ -76,8 +76,8 @@ export function useStudentData() {
               )
             )
           `)
-          .eq('student_id', user.id)
-          .eq('status', 'enrolled');
+.eq('student_id', user.id)
+          .in('status', ['enrolled', 'completed']);
 
         if (enrollmentsError) {
           console.error('Enrollments error:', enrollmentsError);

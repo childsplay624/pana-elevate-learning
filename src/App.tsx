@@ -22,6 +22,7 @@ import Assignments from "./pages/student/Assignments";
 import Help from "./pages/student/Help";
 import CourseLearning from "./pages/CourseLearning";
 import CoursesPage from "./pages/CoursesPage";
+import { CourseEditor } from "./components/course-management/CourseEditor";
 import Unauthorized from "./pages/Unauthorized";
 import NotFound from "./pages/NotFound";
 
@@ -91,6 +92,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={['student', 'instructor', 'admin']}>
                   <CourseLearning />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/course/:courseId/edit" 
+              element={
+                <ProtectedRoute allowedRoles={['instructor', 'admin']}>
+                  <CourseEditor />
                 </ProtectedRoute>
               } 
             />

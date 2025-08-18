@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -21,7 +21,16 @@ import { toast } from 'sonner';
 
 export default function Certificates() {
   const [searchTerm, setSearchTerm] = useState('');
-  const { certificates, stats, loading, error, downloadCertificate, shareCertificate } = useCertificates();
+  const { certificates, stats, loading, error, downloadCertificate, shareCertificate, syncMissingCertificates } = useCertificates();
+
+  // Auto-sync missing certificates if none found after initial load
+  const [synced, setSynced] = useState(false);
+  useEffect(() => {
+    if (!loading && !synced && certificates.length === 0) {
+      setSynced(true);
+      syncMissingCertificates();
+    }
+  }, [loading, certificates.length, synced, syncMissingCertificates]);
 
   const filteredCertificates = certificates.filter(cert =>
     cert.title.toLowerCase().includes(searchTerm.toLowerCase()) ||

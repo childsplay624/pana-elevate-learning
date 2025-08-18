@@ -207,6 +207,47 @@ This certificate is valid and can be verified using the verification code.
     }
   };
 
+  const syncMissingCertificates = async () => {
+    try {
+      if (!user?.id) return;
+
+      const { data: enrollments, error: enrError } = await supabase
+        .from('enrollments')
+        .select('id, course_id, status, progress_percentage, completed_at')
+        .eq('student_id', user.id);
+
+      if (enrError) throw enrError;
+
+      const completed = (enrollments || []).filter((e: any) => e.status === 'completed' || e.progress_percentage === 100);
+
+      for (const enr of completed) {
+        const { data: existing } = await supabase
+          .from('certificates')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('course_id', enr.course_id)
+          .maybeSingle();
+
+        if (!existing) {
+          const { error: certError } = await supabase.rpc('award_certificate', {
+            _user_id: user.id,
+            _course_id: enr.course_id,
+            _enrollment_id: enr.id,
+            _completion_date: enr.completed_at || new Date().toISOString(),
+          });
+
+          if (certError) {
+            console.error('Error awarding missing certificate:', certError);
+          }
+        }
+      }
+
+      await fetchCertificates();
+    } catch (err: any) {
+      console.error('Error syncing certificates:', err);
+    }
+  };
+
   return {
     certificates,
     stats,
@@ -215,6 +256,7 @@ This certificate is valid and can be verified using the verification code.
     fetchCertificates,
     verifyCertificate,
     downloadCertificate,
-    shareCertificate
+    shareCertificate,
+    syncMissingCertificates
   };
 }

@@ -125,8 +125,10 @@ export function DashboardSidebar() {
                       end={item.url === "/dashboard"}
                       className={getNavCls}
                     >
-                      <item.icon className="h-4 w-4" />
-                      {!collapsed && <span>{item.title}</span>}
+                      <div className="flex items-center gap-2">
+                        <item.icon className="h-4 w-4 flex-shrink-0" />
+                        {!collapsed && <span>{item.title}</span>}
+                      </div>
                     </NavLink>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

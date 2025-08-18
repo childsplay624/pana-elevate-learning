@@ -11,7 +11,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ModuleManager } from './ModuleManager';
-import { CourseLayout } from '@/components/CourseLayout';
+import { DashboardLayout } from '@/components/DashboardLayout';
 
 interface Course {
   id?: string;
@@ -130,7 +130,7 @@ export default function CourseCreator() {
   const canEdit = true; // User is creating/editing their own course
 
   return (
-    <CourseLayout>
+    <DashboardLayout>
       <div className="bg-background">{/* Removed min-h-screen as it's handled by CourseLayout */}
       {/* Header */}
       <div className="border-b">
@@ -332,6 +332,6 @@ export default function CourseCreator() {
         </Tabs>
       </div>
     </div>
-    </CourseLayout>
+    </DashboardLayout>
   );
 }

@@ -11,7 +11,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/components/ui/use-toast';
 import { ModuleManager } from './ModuleManager';
-import { CourseLayout } from '@/components/CourseLayout';
+import { DashboardLayout } from '@/components/DashboardLayout';
 import { 
   ArrowLeft, 
   Save, 
@@ -200,7 +200,7 @@ export function CourseEditor() {
   const canEdit = profile?.role === 'admin' || course.instructor_id === user?.id;
 
   return (
-    <CourseLayout>
+    <DashboardLayout>
       <div className="bg-background">{/* Removed min-h-screen as it's handled by CourseLayout */}
       {/* Header */}
       <div className="border-b">
@@ -434,6 +434,6 @@ export function CourseEditor() {
         </Tabs>
       </div>
       </div>
-    </CourseLayout>
+    </DashboardLayout>
   );
 }

@@ -1,13 +1,11 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { BookOpen, Search, Plus, Eye, Edit, Trash2, Users, Clock } from 'lucide-react';
 import { DashboardLayout } from '@/components/DashboardLayout';
 import { supabase } from '@/integrations/supabase/client';
@@ -30,26 +28,16 @@ interface Course {
 }
 
 export default function CourseManagement() {
+  const navigate = useNavigate();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
-  const [isAddCourseOpen, setIsAddCourseOpen] = useState(false);
-  const [instructors, setInstructors] = useState<{id: string, full_name: string}[]>([]);
-  const [newCourse, setNewCourse] = useState({
-    title: '',
-    description: '',
-    category: 'technology' as 'technology' | 'business' | 'design' | 'marketing' | 'health' | 'language' | 'personal_development' | 'academic',
-    price: 0,
-    duration_hours: 0,
-    instructor_id: ''
-  });
   const { toast } = useToast();
 
   useEffect(() => {
     fetchCourses();
-    fetchInstructors();
   }, []);
 
   const fetchCourses = async () => {
@@ -104,71 +92,6 @@ export default function CourseManagement() {
     }
   };
 
-  const fetchInstructors = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name')
-        .in('role', ['instructor', 'admin'])
-        .order('full_name');
-
-      if (error) throw error;
-      setInstructors(data || []);
-    } catch (error) {
-      console.error('Error fetching instructors:', error);
-    }
-  };
-
-  const addCourse = async () => {
-    if (!newCourse.instructor_id) {
-      toast({
-        title: 'Error',
-        description: 'Please select an instructor',
-        variant: 'destructive'
-      });
-      return;
-    }
-
-    try {
-      const { error } = await supabase
-        .from('courses')
-        .insert([{
-          title: newCourse.title,
-          description: newCourse.description,
-          category: newCourse.category,
-          price: newCourse.price,
-          duration_hours: newCourse.duration_hours,
-          instructor_id: newCourse.instructor_id,
-          status: 'draft'
-        }]);
-
-      if (error) throw error;
-
-      setIsAddCourseOpen(false);
-      setNewCourse({
-        title: '',
-        description: '',
-        category: 'technology',
-        price: 0,
-        duration_hours: 0,
-        instructor_id: ''
-      });
-      fetchCourses();
-      
-      toast({
-        title: 'Success',
-        description: 'Course created successfully'
-      });
-    } catch (error) {
-      console.error('Error creating course:', error);
-      toast({
-        title: 'Error',
-        description: 'Failed to create course',
-        variant: 'destructive'
-      });
-    }
-  };
-
   const filteredCourses = courses.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          course.description?.toLowerCase().includes(searchTerm.toLowerCase());
@@ -201,119 +124,17 @@ export default function CourseManagement() {
   return (
     <DashboardLayout>
       <div className="container mx-auto px-6 py-6">
-        <div className="flex items-center justify-between mb-6">
-          <div>
-            <h1 className="text-3xl font-bold">Course Management</h1>
-            <p className="text-muted-foreground">Manage courses, content, and approvals</p>
-          </div>
-          <Dialog open={isAddCourseOpen} onOpenChange={setIsAddCourseOpen}>
-            <DialogTrigger asChild>
-              <Button>
-                <Plus className="h-4 w-4 mr-2" />
-                Add Course
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-              <DialogHeader>
-                <DialogTitle>Add New Course</DialogTitle>
-                <DialogDescription>
-                  Create a new course and assign it to an instructor.
-                </DialogDescription>
-              </DialogHeader>
-              <div className="grid gap-4 py-4">
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="title" className="text-right">
-                    Title
-                  </Label>
-                  <Input
-                    id="title"
-                    value={newCourse.title}
-                    onChange={(e) => setNewCourse(prev => ({ ...prev, title: e.target.value }))}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="description" className="text-right">
-                    Description
-                  </Label>
-                  <Textarea
-                    id="description"
-                    value={newCourse.description}
-                    onChange={(e) => setNewCourse(prev => ({ ...prev, description: e.target.value }))}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="category" className="text-right">
-                    Category
-                  </Label>
-                  <Select value={newCourse.category} onValueChange={(value: 'technology' | 'business' | 'design' | 'marketing' | 'health' | 'language' | 'personal_development' | 'academic') => setNewCourse(prev => ({ ...prev, category: value }))}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="technology">Technology</SelectItem>
-                      <SelectItem value="business">Business</SelectItem>
-                      <SelectItem value="design">Design</SelectItem>
-                      <SelectItem value="marketing">Marketing</SelectItem>
-                      <SelectItem value="health">Health</SelectItem>
-                      <SelectItem value="language">Language</SelectItem>
-                      <SelectItem value="personal_development">Personal Development</SelectItem>
-                      <SelectItem value="academic">Academic</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="instructor" className="text-right">
-                    Instructor
-                  </Label>
-                  <Select value={newCourse.instructor_id} onValueChange={(value) => setNewCourse(prev => ({ ...prev, instructor_id: value }))}>
-                    <SelectTrigger className="col-span-3">
-                      <SelectValue placeholder="Select instructor" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {instructors.map(instructor => (
-                        <SelectItem key={instructor.id} value={instructor.id}>
-                          {instructor.full_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="price" className="text-right">
-                    Price (₦)
-                  </Label>
-                  <Input
-                    id="price"
-                    type="number"
-                    value={newCourse.price}
-                    onChange={(e) => setNewCourse(prev => ({ ...prev, price: Number(e.target.value) }))}
-                    className="col-span-3"
-                  />
-                </div>
-                <div className="grid grid-cols-4 items-center gap-4">
-                  <Label htmlFor="duration" className="text-right">
-                    Duration (hours)
-                  </Label>
-                  <Input
-                    id="duration"
-                    type="number"
-                    value={newCourse.duration_hours}
-                    onChange={(e) => setNewCourse(prev => ({ ...prev, duration_hours: Number(e.target.value) }))}
-                    className="col-span-3"
-                  />
-                </div>
-              </div>
-              <DialogFooter>
-                <Button onClick={addCourse}>Create Course</Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+        {/* Add Course Button */}
+        <div className="flex justify-between items-center">
+          <h1 className="text-3xl font-bold tracking-tight">Course Management</h1>
+          <Button onClick={() => navigate('/dashboard/courses/new')}>
+            <Plus className="h-4 w-4 mr-2" />
+            Add Course
+          </Button>
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6 mt-6">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Courses</CardTitle>

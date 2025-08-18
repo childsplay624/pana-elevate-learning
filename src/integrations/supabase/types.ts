@@ -161,6 +161,75 @@ export type Database = {
         }
         Relationships: []
       }
+      certificates: {
+        Row: {
+          certificate_number: string
+          certificate_url: string | null
+          completion_date: string
+          course_duration_hours: number | null
+          course_id: string
+          course_title: string
+          created_at: string
+          description: string | null
+          enrollment_id: string
+          grade: string | null
+          id: string
+          instructor_name: string
+          is_valid: boolean | null
+          issued_date: string
+          metadata: Json | null
+          score: number | null
+          title: string
+          updated_at: string
+          user_id: string
+          verification_code: string
+        }
+        Insert: {
+          certificate_number: string
+          certificate_url?: string | null
+          completion_date: string
+          course_duration_hours?: number | null
+          course_id: string
+          course_title: string
+          created_at?: string
+          description?: string | null
+          enrollment_id: string
+          grade?: string | null
+          id?: string
+          instructor_name: string
+          is_valid?: boolean | null
+          issued_date?: string
+          metadata?: Json | null
+          score?: number | null
+          title: string
+          updated_at?: string
+          user_id: string
+          verification_code: string
+        }
+        Update: {
+          certificate_number?: string
+          certificate_url?: string | null
+          completion_date?: string
+          course_duration_hours?: number | null
+          course_id?: string
+          course_title?: string
+          created_at?: string
+          description?: string | null
+          enrollment_id?: string
+          grade?: string | null
+          id?: string
+          instructor_name?: string
+          is_valid?: boolean | null
+          issued_date?: string
+          metadata?: Json | null
+          score?: number | null
+          title?: string
+          updated_at?: string
+          user_id?: string
+          verification_code?: string
+        }
+        Relationships: []
+      }
       courses: {
         Row: {
           category: Database["public"]["Enums"]["course_category"]
@@ -725,6 +794,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_certificate: {
+        Args: {
+          _completion_date?: string
+          _course_id: string
+          _enrollment_id: string
+          _grade?: string
+          _score?: number
+          _user_id: string
+        }
+        Returns: string
+      }
       award_points: {
         Args: {
           _action_type: string
@@ -738,6 +818,14 @@ export type Database = {
       calculate_user_level: {
         Args: { exp_points: number }
         Returns: number
+      }
+      generate_certificate_number: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      generate_verification_code: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       is_admin: {
         Args: { _user_id: string }

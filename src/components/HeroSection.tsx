@@ -1,12 +1,14 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Play, Users, Award, Globe, ChevronLeft, ChevronRight } from "lucide-react";
-import heroImage from "@/assets/hero-training.jpg";
+import heroSlide1 from "@/assets/hero-slide-1.jpg";
+import heroSlide2 from "@/assets/hero-slide-2.jpg";
+import heroSlide3 from "@/assets/hero-slide-3.jpg";
 
 const slides = [
   {
     id: 1,
-    backgroundImage: heroImage,
+    backgroundImage: heroSlide1,
     title: "Empowering Talent",
     titleHighlight: "Across Sectors",
     subtitle: "Transform your career with world-class training, consulting, and certification programs designed for today's professionals.",
@@ -32,7 +34,7 @@ const slides = [
   },
   {
     id: 2,
-    backgroundImage: heroImage,
+    backgroundImage: heroSlide2,
     title: "Next-Generation",
     titleHighlight: "Professional Training",
     subtitle: "Advance your expertise with industry-leading programs that bridge the gap between traditional skills and future demands.",
@@ -58,7 +60,7 @@ const slides = [
   },
   {
     id: 3,
-    backgroundImage: heroImage,
+    backgroundImage: heroSlide3,
     title: "Excellence in",
     titleHighlight: "Corporate Learning",
     subtitle: "Partner with us to transform your workforce through comprehensive corporate training solutions and strategic consulting.",

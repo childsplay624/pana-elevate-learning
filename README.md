@@ -1,73 +1,105 @@
-# Welcome to your Lovable project
+PANA Academy LMS
 
-## Project info
+An Educational Management System (EMS) designed for PANA Academy. This platform allows administrators, instructors, and students to manage courses, track progress, and interact in an engaging learning environment.
 
-**URL**: https://lovable.dev/projects/baf8cfae-d118-49c5-ac52-d0048f08973e
+Features
+Authentication & User Management
 
-## How can I edit this code?
+Secure sign-up and login with email/password or social providers.
 
-There are several ways of editing your application.
+Role-based access (Admin, Instructor, Student).
 
-**Use Lovable**
+User profiles with customizable information.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/baf8cfae-d118-49c5-ac52-d0048f08973e) and start prompting.
+Course Management
 
-Changes made via Lovable will be committed automatically to this repo.
+Create, edit, and organize courses.
 
-**Use your preferred IDE**
+Upload lessons, videos, and other learning materials.
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+Assign instructors to courses.
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+Enroll students manually or via registration codes.
 
-Follow these steps:
+Student Dashboard
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+Personalized dashboard showing enrolled courses.
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+Progress tracking for lessons and modules.
 
-# Step 3: Install the necessary dependencies.
-npm i
+Collapsible and responsive sidebar for easy navigation.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+Interactive charts for performance insights.
+
+Instructor Dashboard
+
+Manage assigned courses.
+
+Upload and organize learning materials.
+
+Monitor student progress and performance.
+
+Admin Dashboard
+
+Full control of users (students, instructors, admins).
+
+Course approval and management.
+
+Analytics and reports on platform usage.
+
+Backend Integration
+
+Built with a scalable backend supporting user authentication, course data storage, and analytics.
+
+Real-time database for student progress and course updates.
+
+Secure APIs for course, user, and content management.
+
+Tech Stack
+
+Frontend: React + Tailwind CSS (responsive and mobile-friendly design).
+
+Backend: Node.js + Supabase (authentication, data, and storage).
+
+Database: PostgreSQL (structured and scalable).
+
+Installation
+
+Clone the repository:
+
+git clone https://github.com/yourusername/pana-academy-lms.git
+cd pana-academy-lms
+
+
+Install dependencies:
+
+npm install
+
+
+Set up environment variables in a .env file:
+
+SUPABASE_URL=your_supabase_url
+SUPABASE_ANON_KEY=your_supabase_anon_key
+
+
+Run the development server:
+
 npm run dev
-```
 
-**Edit a file directly in GitHub**
+Roadmap
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+✅ Authentication (email/social login).
 
-**Use GitHub Codespaces**
+✅ Student, Instructor, Admin dashboards.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+✅ Course creation & enrollment.
 
-## What technologies are used for this project?
+🚧 Quizzes & Assessments.
 
-This project is built with:
+🚧 Certificates on course completion.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+🚧 AI-driven recommendations for courses.
 
-## How can I deploy this project?
+License
 
-Simply open [Lovable](https://lovable.dev/projects/baf8cfae-d118-49c5-ac52-d0048f08973e) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/tips-tricks/custom-domain#step-by-step-guide)
+This project is licensed under the MIT License.

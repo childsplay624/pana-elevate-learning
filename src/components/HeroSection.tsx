@@ -4,12 +4,6 @@ import { ArrowRight, Play, Users, Award, Globe, ChevronLeft, ChevronRight } from
 import heroSlide1 from "@/assets/hero-slide-1.jpg";
 import heroSlide2 from "@/assets/hero-slide-2.jpg";
 import heroSlide3 from "@/assets/hero-slide-3.jpg";
-import shellLogo from "@/assets/logos/shell-logo.png";
-import totalLogo from "@/assets/logos/total-logo.png";
-import chevronLogo from "@/assets/logos/chevron-logo.png";
-import nnpcLogo from "@/assets/logos/nnpc-logo.png";
-import accessBankLogo from "@/assets/logos/access-bank-logo.png";
-import mtnLogo from "@/assets/logos/mtn-logo.png";
 
 const slides = [
   {
@@ -124,15 +118,6 @@ const HeroSection = () => {
 
   const currentSlideData = slides[currentSlide];
 
-  const clientLogos = [
-    { name: "Shell", logo: shellLogo },
-    { name: "Total", logo: totalLogo },
-    { name: "Chevron", logo: chevronLogo },
-    { name: "NNPC", logo: nnpcLogo },
-    { name: "Access Bank", logo: accessBankLogo },
-    { name: "MTN", logo: mtnLogo },
-  ];
-
   return (
     <section id="home" className="relative min-h-screen flex items-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -203,18 +188,12 @@ const HeroSection = () => {
 
             {/* Trust Indicators */}
             <div className="pt-8 border-t border-white/20">
-              <p className="text-sm text-gray-300 mb-6">Trusted by industry leaders</p>
-              <div className="grid grid-cols-3 gap-6 opacity-80">
-                {clientLogos.map((client, index) => (
-                  <div key={index} className="flex items-center justify-center h-12">
-                    <img 
-                      src={client.logo} 
-                      alt={`${client.name} logo`}
-                      className="max-h-full max-w-full object-contain filter brightness-0 invert opacity-70 hover:opacity-100 transition-opacity duration-300"
-                      style={{ maxWidth: '100px' }}
-                    />
-                  </div>
-                ))}
+              <p className="text-sm text-gray-300 mb-4">Trusted by industry leaders</p>
+              <div className="flex items-center space-x-6 opacity-70">
+                <div className="text-sm font-medium">Shell</div>
+                <div className="text-sm font-medium">Total</div>
+                <div className="text-sm font-medium">Chevron</div>
+                <div className="text-sm font-medium">NNPC</div>
               </div>
             </div>
           </div>

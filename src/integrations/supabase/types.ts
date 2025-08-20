@@ -233,6 +233,7 @@ export type Database = {
       courses: {
         Row: {
           category: Database["public"]["Enums"]["course_category"]
+          course_type: string | null
           created_at: string
           description: string | null
           duration_hours: number | null
@@ -242,13 +243,16 @@ export type Database = {
           level: string | null
           price: number | null
           requirements: string[] | null
+          scheduled_date: string | null
           status: Database["public"]["Enums"]["course_status"] | null
           thumbnail_url: string | null
           title: string
           updated_at: string
+          zoom_meeting_id: string | null
         }
         Insert: {
           category: Database["public"]["Enums"]["course_category"]
+          course_type?: string | null
           created_at?: string
           description?: string | null
           duration_hours?: number | null
@@ -258,13 +262,16 @@ export type Database = {
           level?: string | null
           price?: number | null
           requirements?: string[] | null
+          scheduled_date?: string | null
           status?: Database["public"]["Enums"]["course_status"] | null
           thumbnail_url?: string | null
           title: string
           updated_at?: string
+          zoom_meeting_id?: string | null
         }
         Update: {
           category?: Database["public"]["Enums"]["course_category"]
+          course_type?: string | null
           created_at?: string
           description?: string | null
           duration_hours?: number | null
@@ -274,10 +281,12 @@ export type Database = {
           level?: string | null
           price?: number | null
           requirements?: string[] | null
+          scheduled_date?: string | null
           status?: Database["public"]["Enums"]["course_status"] | null
           thumbnail_url?: string | null
           title?: string
           updated_at?: string
+          zoom_meeting_id?: string | null
         }
         Relationships: [
           {

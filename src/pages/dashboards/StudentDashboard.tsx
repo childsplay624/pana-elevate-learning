@@ -21,6 +21,8 @@ import { ProgressChart } from '@/components/dashboard/ProgressChart';
 import { CourseProgressChart } from '@/components/dashboard/CourseProgressChart';
 import { ErrorBoundary } from '@/components/ErrorBoundary';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
+import { SetGoalsDialog } from '@/components/student/SetGoalsDialog';
+import { ScheduleDialog } from '@/components/student/ScheduleDialog';
 
 // Define interfaces for our data models
 interface UserProfile {
@@ -346,14 +348,18 @@ export default function StudentDashboard() {
                     <span className="text-xs">No Certificates</span>
                   </Button>
                 )}
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
-                  <Calendar className="h-5 w-5" />
-                  <span className="text-xs">Study Schedule</span>
-                </Button>
-                <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
-                  <Target className="h-5 w-5" />
-                  <span className="text-xs">Set Goals</span>
-                </Button>
+                <ScheduleDialog>
+                  <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                    <Calendar className="h-5 w-5" />
+                    <span className="text-xs">Study Schedule</span>
+                  </Button>
+                </ScheduleDialog>
+                <SetGoalsDialog>
+                  <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm">
+                    <Target className="h-5 w-5" />
+                    <span className="text-xs">Set Goals</span>
+                  </Button>
+                </SetGoalsDialog>
                 <Button variant="outline" className="h-20 flex flex-col gap-2" size="sm" asChild>
                   <Link to="/dashboard/progress">
                     <BarChart3 className="h-5 w-5" />

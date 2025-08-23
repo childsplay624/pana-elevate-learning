@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useGamification } from '@/hooks/useGamification';
+import { useEmailNotifications } from '@/hooks/useEmailNotifications';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
@@ -65,6 +66,7 @@ export default function CourseLearning() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { awardPoints, updateStreak } = useGamification();
+  const { sendEnrollmentConfirmation, sendCertificateNotification } = useEmailNotifications();
   const { toast } = useToast();
   
   const [loading, setLoading] = useState(true);
@@ -289,9 +291,12 @@ export default function CourseLearning() {
 
       if (error) throw error;
 
+      // Send enrollment confirmation email
+      await sendEnrollmentConfirmation(courseId, user.id);
+
       toast({
         title: "Enrolled Successfully! 🎉",
-        description: "You can now access all course content",
+        description: "You can now access all course content. A confirmation email has been sent.",
       });
 
       // Refresh data

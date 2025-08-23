@@ -161,6 +161,19 @@ serve(async (req) => {
 
     console.log('Submission updated successfully:', updatedSubmission.id);
 
+    // Send assignment submission confirmation email
+    try {
+      await supabase.functions.invoke('send-assignment-submission-email', {
+        body: {
+          assignmentId: updatedSubmission.assignment_id,
+          studentId: updatedSubmission.student_id
+        }
+      });
+    } catch (emailError) {
+      console.error('Failed to send submission confirmation email:', emailError);
+      // Don't fail the request if email fails
+    }
+
     return new Response(
       JSON.stringify({ 
         success: true, 

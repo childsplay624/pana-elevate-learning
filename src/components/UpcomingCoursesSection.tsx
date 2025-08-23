@@ -6,6 +6,7 @@ import { Clock, Users, Star, ChevronRight } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
+import { useEmailNotifications } from '@/hooks/useEmailNotifications';
 
 interface Course {
   id: string;
@@ -26,6 +27,7 @@ export default function UpcomingCoursesSection() {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
   const { toast } = useToast();
+  const { sendEnrollmentConfirmation } = useEmailNotifications();
 
   useEffect(() => {
     fetchUpcomingCourses();
@@ -88,9 +90,12 @@ export default function UpcomingCoursesSection() {
 
       if (error) throw error;
 
+      // Send enrollment confirmation email
+      await sendEnrollmentConfirmation(courseId, user.id);
+
       toast({
         title: "Enrollment Successful",
-        description: "You have been enrolled in the course!",
+        description: "You have been enrolled in the course! A confirmation email has been sent.",
       });
     } catch (error: any) {
       toast({

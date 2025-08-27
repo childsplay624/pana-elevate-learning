@@ -248,6 +248,7 @@ export default function CourseLearning() {
           _user_id: user.id,
           _course_id: courseId,
           _enrollment_id: enrollment.id,
+          _completion_date: new Date().toISOString(),
         });
         if (certError) {
           console.error('Error awarding certificate:', certError);

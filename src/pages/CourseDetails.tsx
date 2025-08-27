@@ -24,9 +24,9 @@ interface Course {
   requirements: string[];
   status: string;
   created_at: string;
-  profiles: {
+  profiles?: {
     full_name: string;
-  };
+  } | null;
 }
 
 interface Module {
@@ -194,7 +194,7 @@ export default function CourseDetails() {
           <div className="flex items-center gap-6 text-sm text-muted-foreground">
             <div className="flex items-center gap-1">
               <Users className="w-4 h-4" />
-              <span>By {course.profiles.full_name}</span>
+              <span>By {course.profiles?.full_name || 'Unknown Instructor'}</span>
             </div>
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
@@ -366,7 +366,7 @@ export default function CourseDetails() {
                     <Users className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="font-semibold">{course.profiles.full_name}</h4>
+                    <h4 className="font-semibold">{course.profiles?.full_name || 'Unknown Instructor'}</h4>
                     <p className="text-sm text-muted-foreground">Course Instructor</p>
                   </div>
                 </div>

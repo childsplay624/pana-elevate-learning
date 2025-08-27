@@ -166,17 +166,24 @@ export type Database = {
           certificate_number: string
           completion_dat: string | null
           completion_date: string | null
+          course_duration_hours: number | null
           course_id: string
+          course_title: string | null
           created_at: string | null
+          description: string | null
           download_url: string | null
           enrollment_id: string | null
           expires_at: string | null
           grade: string | null
           id: string
+          instructor_name: string | null
+          is_valid: boolean | null
           issued_at: string | null
+          issued_date: string | null
           metadata: Json | null
           score: number | null
           status: string | null
+          title: string | null
           user_id: string
           verification_code: string | null
         }
@@ -184,17 +191,24 @@ export type Database = {
           certificate_number: string
           completion_dat?: string | null
           completion_date?: string | null
+          course_duration_hours?: number | null
           course_id: string
+          course_title?: string | null
           created_at?: string | null
+          description?: string | null
           download_url?: string | null
           enrollment_id?: string | null
           expires_at?: string | null
           grade?: string | null
           id?: string
+          instructor_name?: string | null
+          is_valid?: boolean | null
           issued_at?: string | null
+          issued_date?: string | null
           metadata?: Json | null
           score?: number | null
           status?: string | null
+          title?: string | null
           user_id: string
           verification_code?: string | null
         }
@@ -202,17 +216,24 @@ export type Database = {
           certificate_number?: string
           completion_dat?: string | null
           completion_date?: string | null
+          course_duration_hours?: number | null
           course_id?: string
+          course_title?: string | null
           created_at?: string | null
+          description?: string | null
           download_url?: string | null
           enrollment_id?: string | null
           expires_at?: string | null
           grade?: string | null
           id?: string
+          instructor_name?: string | null
+          is_valid?: boolean | null
           issued_at?: string | null
+          issued_date?: string | null
           metadata?: Json | null
           score?: number | null
           status?: string | null
+          title?: string | null
           user_id?: string
           verification_code?: string | null
         }
@@ -1142,24 +1163,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      award_certificate: {
-        Args:
-          | {
-              _completion_date: string
-              _course_id: string
-              _enrollment_id: string
-              _user_id: string
-            }
-          | {
-              _completion_date?: string
-              _course_id: string
-              _enrollment_id: string
-              _grade?: string
-              _score?: number
-              _user_id: string
-            }
-        Returns: Json
-      }
       award_points: {
         Args: {
           _action_type: string

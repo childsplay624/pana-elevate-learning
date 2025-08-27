@@ -1163,6 +1163,17 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      award_certificate: {
+        Args: {
+          _completion_date: string
+          _course_id: string
+          _enrollment_id: string
+          _grade?: string
+          _score?: number
+          _user_id: string
+        }
+        Returns: string
+      }
       award_points: {
         Args: {
           _action_type: string

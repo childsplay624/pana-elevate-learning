@@ -186,10 +186,6 @@ export default function Certificates() {
                       <h3 className="font-semibold text-lg mb-1">{cert.title}</h3>
                       <p className="text-sm text-muted-foreground">Awarded to: {cert.student_name || 'Student'}</p>
                       <p className="text-sm text-muted-foreground">Course: {cert.course_title}</p>
-                      <p className="text-sm text-muted-foreground">Instructor: {cert.instructor_name}</p>
-                      {cert.course_duration_hours && (
-                        <p className="text-sm text-muted-foreground">Duration: {cert.course_duration_hours} hours</p>
-                      )}
                     </div>
 
                     <div className="space-y-2">

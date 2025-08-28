@@ -155,13 +155,10 @@ ${certificate.student_name || 'Student'}
 Has successfully completed the course:
 ${certificate.course_title}
 
-On: ${new Date(certificate.completion_date).toLocaleDateString()}
+Completed on: ${new Date(certificate.completion_date).toLocaleDateString()}
 
 Certificate Number: ${certificate.certificate_number}
 Verification Code: ${certificate.verification_code}
-Instructor: ${certificate.instructor_name}
-Grade: ${certificate.grade || 'N/A'}
-Duration: ${certificate.course_duration_hours || 'N/A'} hours
 
 This certificate is valid and can be verified using the verification code.
 `;

@@ -20,6 +20,7 @@ export interface Certificate {
   course_duration_hours?: number;
   certificate_url?: string;
   verification_code: string;
+  student_name?: string;
   metadata?: any;
   is_valid: boolean;
   created_at: string;
@@ -148,11 +149,13 @@ export function useCertificates() {
       const certificateContent = `
 CERTIFICATE OF COMPLETION
 
-This is to certify that the course:
+This is to certify that:
+${certificate.student_name || 'Student'}
+
+Has successfully completed the course:
 ${certificate.course_title}
 
-Has been successfully completed by the recipient on:
-${new Date(certificate.completion_date).toLocaleDateString()}
+On: ${new Date(certificate.completion_date).toLocaleDateString()}
 
 Certificate Number: ${certificate.certificate_number}
 Verification Code: ${certificate.verification_code}

@@ -17,6 +17,7 @@ const Navigation = () => {
       href: "#services",
       dropdown: [
         { name: "Training Programs", href: "#training" },
+        { name: "Training Delivery", href: "/training-delivery" },
         { name: "Consulting Services", href: "#consulting" },
         { name: "Research & Development", href: "#research" }
       ]
@@ -58,13 +59,23 @@ const Navigation = () => {
                 {item.dropdown && activeDropdown === item.name && (
                   <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-border py-2">
                     {item.dropdown.map((dropdownItem) => (
-                      <a
-                        key={dropdownItem.name}
-                        href={dropdownItem.href}
-                        className="block px-4 py-2 text-sm text-foreground hover:bg-pana-light-gray hover:text-pana-blue transition-colors duration-200"
-                      >
-                        {dropdownItem.name}
-                      </a>
+                      dropdownItem.href.startsWith('#') ? (
+                        <a
+                          key={dropdownItem.name}
+                          href={dropdownItem.href}
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-pana-light-gray hover:text-pana-blue transition-colors duration-200"
+                        >
+                          {dropdownItem.name}
+                        </a>
+                      ) : (
+                        <Link
+                          key={dropdownItem.name}
+                          to={dropdownItem.href}
+                          className="block px-4 py-2 text-sm text-foreground hover:bg-pana-light-gray hover:text-pana-blue transition-colors duration-200"
+                        >
+                          {dropdownItem.name}
+                        </Link>
+                      )
                     ))}
                   </div>
                 )}
@@ -117,17 +128,28 @@ const Navigation = () => {
                   >
                     {item.name}
                   </a>
-                  {item.dropdown && (
+                   {item.dropdown && (
                     <div className="pl-6 space-y-1">
                       {item.dropdown.map((dropdownItem) => (
-                        <a
-                          key={dropdownItem.name}
-                          href={dropdownItem.href}
-                          className="block px-3 py-2 text-sm text-muted-foreground hover:text-pana-blue transition-colors duration-200"
-                          onClick={() => setIsOpen(false)}
-                        >
-                          {dropdownItem.name}
-                        </a>
+                        dropdownItem.href.startsWith('#') ? (
+                          <a
+                            key={dropdownItem.name}
+                            href={dropdownItem.href}
+                            className="block px-3 py-2 text-sm text-muted-foreground hover:text-pana-blue transition-colors duration-200"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {dropdownItem.name}
+                          </a>
+                        ) : (
+                          <Link
+                            key={dropdownItem.name}
+                            to={dropdownItem.href}
+                            className="block px-3 py-2 text-sm text-muted-foreground hover:text-pana-blue transition-colors duration-200"
+                            onClick={() => setIsOpen(false)}
+                          >
+                            {dropdownItem.name}
+                          </Link>
+                        )
                       ))}
                     </div>
                   )}

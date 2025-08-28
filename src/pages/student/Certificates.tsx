@@ -17,11 +17,13 @@ import {
   Clock
 } from 'lucide-react';
 import { useCertificates } from '@/hooks/useCertificates';
+import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 export default function Certificates() {
   const [searchTerm, setSearchTerm] = useState('');
   const { certificates, stats, loading, error, downloadCertificate, shareCertificate, syncMissingCertificates } = useCertificates();
+  const { profile } = useAuth();
 
   // Auto-sync missing certificates if none found after initial load
   const [synced, setSynced] = useState(false);
@@ -184,7 +186,7 @@ export default function Certificates() {
                   <CardContent className="space-y-4">
                     <div>
                       <h3 className="font-semibold text-lg mb-1">{cert.title}</h3>
-                      <p className="text-sm text-muted-foreground">Awarded to: {cert.student_name || 'Student'}</p>
+                      <p className="text-sm text-muted-foreground">Awarded to: {cert.student_name || profile?.full_name || 'Student'}</p>
                       <p className="text-sm text-muted-foreground">Course: {cert.course_title}</p>
                     </div>
 

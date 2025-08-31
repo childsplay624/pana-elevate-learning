@@ -1006,6 +1006,51 @@ export type Database = {
         }
         Relationships: []
       }
+      testimonials: {
+        Row: {
+          avatar_url: string | null
+          company: string
+          content: string
+          created_at: string
+          display_order: number | null
+          id: string
+          image_initials: string | null
+          is_active: boolean
+          name: string
+          position: string
+          rating: number
+          updated_at: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          company: string
+          content: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_initials?: string | null
+          is_active?: boolean
+          name: string
+          position: string
+          rating?: number
+          updated_at?: string
+        }
+        Update: {
+          avatar_url?: string | null
+          company?: string
+          content?: string
+          created_at?: string
+          display_order?: number | null
+          id?: string
+          image_initials?: string | null
+          is_active?: boolean
+          name?: string
+          position?: string
+          rating?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       transactions: {
         Row: {
           amount: number

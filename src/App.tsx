@@ -15,6 +15,7 @@ import InstructorDashboard from "./pages/dashboards/InstructorDashboard";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import UserManagement from "./pages/admin/UserManagement";
 import CourseManagement from "./pages/admin/CourseManagement";
+import TestimonialManagement from "./pages/admin/TestimonialManagement";
 import Analytics from "./pages/admin/Analytics";
 import Settings from "./pages/admin/Settings";
 import MyCourses from "./pages/student/MyCourses";
@@ -124,6 +125,14 @@ const App = () => (
               element={
                 <ProtectedRoute allowedRoles={['admin', 'instructor']}>
                   <CourseCreator />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/dashboard/testimonials" 
+              element={
+                <ProtectedRoute allowedRoles={['admin']}>
+                  <TestimonialManagement />
                 </ProtectedRoute>
               } 
             />

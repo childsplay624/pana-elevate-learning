@@ -54,10 +54,11 @@ export default {
 				},
 				// PANA Academy Brand Colors
 				pana: {
-					navy: 'hsl(var(--pana-navy))',
-					blue: 'hsl(var(--pana-blue))',
-					gold: 'hsl(var(--pana-gold))',
-					'light-blue': 'hsl(var(--pana-light-blue))',
+					red: 'hsl(var(--pana-red))',
+					'red-dark': 'hsl(var(--pana-red-dark))',
+					'red-light': 'hsl(var(--pana-red-light))',
+					'red-lighter': 'hsl(var(--pana-red-lighter))',
+					black: 'hsl(var(--pana-black))',
 					gray: 'hsl(var(--pana-gray))',
 					'light-gray': 'hsl(var(--pana-light-gray))'
 				},
